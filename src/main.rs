@@ -2,6 +2,21 @@ use crate::magic_square::MagicSquare;
 
 mod magic_square;
 
+fn has_duplicates(n1: i32, n2: i32, n3: i32, n4: i32, n5: i32, n6: i32, n7: i32, n8: i32, n9: i32) -> bool {
+    let mut count = [0; 10]; // Initialize an array to store the count of each number
+
+    let numbers = [n1, n2, n3, n4, n5, n6, n7, n8, n9];
+
+    for &number in &numbers {
+        count[number as usize] += 1; // Increment the count for each number
+        if count[number as usize] > 1 {
+            return true; // Duplicate found
+        }
+    }
+
+    false
+}
+
 fn main() {
     const LIMIT: i32 = 2;
     for a in 0..LIMIT {
