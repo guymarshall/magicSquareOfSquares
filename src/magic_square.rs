@@ -69,8 +69,6 @@ impl MagicSquare {
             self.sw_ne_sum()
         ];
 
-        let all_equal: bool = results.iter().all(|&x| x == results[0]);
-
-        all_equal
+        results.iter().all(|&x| x == results[0])
     }
 }
