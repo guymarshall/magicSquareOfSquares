@@ -56,4 +56,21 @@ impl MagicSquare {
     fn sw_ne_sum(&self) -> i32 {
         self.number7 + self.number5 + self.number3
     }
+
+    pub fn sums_are_equal(&self) -> bool {
+        let results = [
+            self.top_row_sum(),
+            self.middle_row_sum(),
+            self.bottom_row_sum(),
+            self.left_column_sum(),
+            self.middle_column_sum(),
+            self.right_column_sum(),
+            self.nw_se_sum(),
+            self.sw_ne_sum()
+        ];
+
+        let all_equal = results.iter().all(|&x| x == results[0]);
+
+        all_equal
+    }
 }
