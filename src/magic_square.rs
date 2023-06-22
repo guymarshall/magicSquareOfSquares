@@ -26,38 +26,6 @@ impl MagicSquare {
         }
     }
 
-    fn top_row_sum(&self) -> i32 {
-        self.number1 + self.number2 + self.number3
-    }
-
-    fn middle_row_sum(&self) -> i32 {
-        self.number4 + self.number5 + self.number6
-    }
-
-    fn bottom_row_sum(&self) -> i32 {
-        self.number7 + self.number8 + self.number9
-    }
-
-    fn left_column_sum(&self) -> i32 {
-        self.number1 + self.number4 + self.number7
-    }
-
-    fn middle_column_sum(&self) -> i32 {
-        self.number2 + self.number5 + self.number8
-    }
-
-    fn right_column_sum(&self) -> i32 {
-        self.number3 + self.number6 + self.number9
-    }
-
-    fn nw_se_sum(&self) -> i32 {
-        self.number1 + self.number5 + self.number9
-    }
-
-    fn sw_ne_sum(&self) -> i32 {
-        self.number7 + self.number5 + self.number3
-    }
-
     pub fn sums_are_equal(&self) -> bool {
         let top_row_sum = self.number1 + self.number2 + self.number3;
         let middle_row_sum = self.number4 + self.number5 + self.number6;
