@@ -36,4 +36,16 @@ impl MagicSquare {
     fn bottom_row_sum(&self) -> i32 {
         self.number7 + self.number8 + self.number9
     }
+
+    fn left_column_sum(&self) -> i32 {
+        self.number1 + self.number4 + self.number7
+    }
+
+    fn middle_column_sum(&self) -> i32 {
+        self.number2 + self.number5 + self.number8
+    }
+
+    fn right_column_sum(&self) -> i32 {
+        self.number3 + self.number6 + self.number9
+    }
 }
