@@ -48,4 +48,12 @@ impl MagicSquare {
     fn right_column_sum(&self) -> i32 {
         self.number3 + self.number6 + self.number9
     }
+
+    fn nw_se_sum(&self) -> i32 {
+        self.number1 + self.number5 + self.number9
+    }
+
+    fn sw_ne_sum(&self) -> i32 {
+        self.number7 + self.number5 + self.number3
+    }
 }
