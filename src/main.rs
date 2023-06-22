@@ -18,7 +18,7 @@ fn numbers_are_unique(number1: i32, number2: i32, number3: i32, number4: i32, nu
 }
 
 fn main() {
-    const LIMIT: i32 = 2;
+    const LIMIT: i32 = 8;
     for a in 0..LIMIT {
         for b in 0..LIMIT {
             for c in 0..LIMIT {
