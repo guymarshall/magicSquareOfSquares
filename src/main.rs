@@ -29,11 +29,14 @@ fn main() {
                                 for h in 0..LIMIT {
                                     for i in 0..LIMIT {
                                         let numbers_are_unique: bool = numbers_are_unique(a, b, c, d, e, f, g, h, i);
-                                        let square: MagicSquare = MagicSquare::new(a, b, c, d, e, f, g, h, i);
-                                        let is_magic: bool = square.sums_are_equal();
 
-                                        if is_magic {
-                                            println!("{:?}", square);
+                                        if numbers_are_unique {
+                                            let square: MagicSquare = MagicSquare::new(a, b, c, d, e, f, g, h, i);
+                                            let is_magic: bool = square.sums_are_equal();
+
+                                            if is_magic {
+                                                println!("{:?}", square);
+                                            }
                                         }
                                     }
                                 }
