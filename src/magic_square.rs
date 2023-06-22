@@ -59,25 +59,25 @@ impl MagicSquare {
     }
 
     pub fn sums_are_equal(&self) -> bool {
-        let sum1 = self.number1 + self.number2 + self.number3;
-        let sum2 = self.number4 + self.number5 + self.number6;
-        let sum3 = self.number7 + self.number8 + self.number9;
+        let top_row_sum = self.number1 + self.number2 + self.number3;
+        let middle_row_sum = self.number4 + self.number5 + self.number6;
+        let bottom_row_sum = self.number7 + self.number8 + self.number9;
 
-        if sum1 != sum2 || sum2 != sum3 {
+        if top_row_sum != middle_row_sum || middle_row_sum != bottom_row_sum {
             return false;
         }
 
-        let sum4 = self.number1 + self.number4 + self.number7;
-        let sum5 = self.number2 + self.number5 + self.number8;
-        let sum6 = self.number3 + self.number6 + self.number9;
+        let left_column_sum = self.number1 + self.number4 + self.number7;
+        let middle_column_sum = self.number2 + self.number5 + self.number8;
+        let right_column_sum = self.number3 + self.number6 + self.number9;
 
-        if sum3 != sum4 || sum4 != sum5 || sum5 != sum6 {
+        if bottom_row_sum != left_column_sum || left_column_sum != middle_column_sum || middle_column_sum != right_column_sum {
             return false;
         }
 
-        let sum7 = self.number1 + self.number5 + self.number9;
-        let sum8 = self.number7 + self.number5 + self.number3;
+        let nw_se_sum = self.number1 + self.number5 + self.number9;
+        let sw_ne_sum = self.number7 + self.number5 + self.number3;
 
-        sum6 == sum7 && sum7 == sum8
+        right_column_sum == nw_se_sum && nw_se_sum == sw_ne_sum
     }
 }
