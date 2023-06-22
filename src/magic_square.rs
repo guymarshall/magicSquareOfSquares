@@ -69,6 +69,6 @@ impl MagicSquare {
             self.sw_ne_sum()
         ];
 
-        results.iter().all(|&x| x == results[0])
+        results.iter().all(|&result| result == results[0])
     }
 }
