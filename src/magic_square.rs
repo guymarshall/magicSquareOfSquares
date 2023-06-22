@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub struct MagicSquare {
     number1: i32,
     number2: i32,
