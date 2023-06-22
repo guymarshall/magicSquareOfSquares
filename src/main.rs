@@ -2,10 +2,10 @@ use crate::magic_square::MagicSquare;
 
 mod magic_square;
 
-fn numbers_are_unique(n1: i32, n2: i32, n3: i32, n4: i32, n5: i32, n6: i32, n7: i32, n8: i32, n9: i32) -> bool {
+fn numbers_are_unique(number1: i32, number2: i32, number3: i32, number4: i32, number5: i32, number6: i32, number7: i32, number8: i32, number9: i32) -> bool {
     let mut count = [0; 10];
 
-    let numbers = [n1, n2, n3, n4, n5, n6, n7, n8, n9];
+    let numbers = [number1, number2, number3, number4, number5, number6, number7, number8, number9];
 
     for &number in &numbers {
         count[number as usize] += 1;
