@@ -5,8 +5,7 @@ mod magic_square;
 
 fn numbers_are_unique(number1: i32, number2: i32, number3: i32, number4: i32, number5: i32, number6: i32, number7: i32, number8: i32, number9: i32) -> bool {
     let mask: u8 = (1 << number1) | (1 << number2) | (1 << number3) | (1 << number4) | (1 << number5) | (1 << number6) | (1 << number7) | (1 << number8) | (1 << number9);
-    let count: u32 = mask.count_ones();
-    count == 9
+    mask.count_ones() == 9
 }
 
 fn main() {
