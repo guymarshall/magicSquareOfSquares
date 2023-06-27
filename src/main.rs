@@ -43,7 +43,7 @@ fn numbers_are_unique(number1: i32, number2: i32, number3: i32, number4: i32, nu
 }
 
 fn main() {
-    const LIMIT: i32 = 10;
+    const LIMIT: i32 = 40;
 
     (0..LIMIT).into_par_iter().for_each(|a| {
         (0..LIMIT).for_each(|b| {
