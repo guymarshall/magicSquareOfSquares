@@ -1,9 +1,8 @@
-use crate::magic_square::MagicSquare;
 use rayon::prelude::*;
 
 mod magic_square;
 
-fn numbers_are_unique(numbers: &[i32; 9]) -> bool {
+fn numbers_are_unique(numbers: [i32; 9]) -> bool {
     !(numbers[0] == numbers[1]
         || numbers[0] == numbers[2]
         || numbers[0] == numbers[3]
@@ -42,7 +41,7 @@ fn numbers_are_unique(numbers: &[i32; 9]) -> bool {
         || numbers[7] == numbers[8])
 }
 
-fn sums_are_equal(numbers: &[i32; 9]) -> bool {
+fn sums_are_equal(numbers: [i32; 9]) -> bool {
     let top_row_sum: i32 = numbers[0] + numbers[1] + numbers[2];
     let middle_row_sum: i32 = numbers[3] + numbers[4] + numbers[5];
     let bottom_row_sum: i32 = numbers[6] + numbers[7] + numbers[8];
@@ -68,8 +67,6 @@ fn sums_are_equal(numbers: &[i32; 9]) -> bool {
 fn main() {
     const LIMIT: i32 = 40;
 
-    let square: MagicSquare = MagicSquare::new([0, 0, 0, 0, 0, 0, 0, 0, 0]);
-
     (0..LIMIT).for_each(|a| {
         (0..LIMIT).into_par_iter().for_each(|b| {
             (0..LIMIT).for_each(|c| {
@@ -79,14 +76,9 @@ fn main() {
                             (0..LIMIT).for_each(|g| {
                                 (0..LIMIT).for_each(|h| {
                                     (0..LIMIT).for_each(|i| {
-                                        let numbers_are_unique: bool = numbers_are_unique(&square.numbers);
-
-                                        if numbers_are_unique {
-                                            square.clone().set([a, b, c, d, e, f, g, h, i]);
-                                            let is_magic: bool = sums_are_equal(&square.numbers);
-
-                                            if is_magic {
-                                                println!("{:?}", square);
+                                        if numbers_are_unique([a, b, c, d, e, f, g, h, i]) {
+                                            if sums_are_equal([a, b, c, d, e, f, g, h, i]) {
+                                                println!("{:?}", [a, b, c, d, e, f, g, h, i]);
                                             }
                                         }
                                     });
