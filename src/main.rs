@@ -71,7 +71,7 @@ fn main() {
                     });
                 });
             });
-            println!("{:<10} {:<10} {:<10}", a, b, LIMIT);
+            println!("{} / {}", b, LIMIT);
         });
     });
 }
