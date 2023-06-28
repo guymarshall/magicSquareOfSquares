@@ -26,6 +26,18 @@ impl MagicSquare {
         }
     }
 
+    pub fn set(&mut self, number1: i32, number2: i32, number3: i32, number4: i32, number5: i32, number6: i32, number7: i32, number8: i32, number9: i32) {
+        self.number1 = number1 * number1;
+        self.number2 = number2 * number2;
+        self.number3 = number3 * number3;
+        self.number4 = number4 * number4;
+        self.number5 = number5 * number5;
+        self.number6 = number6 * number6;
+        self.number7 = number7 * number7;
+        self.number8 = number8 * number8;
+        self.number9 = number9 * number9;
+    }
+
     pub fn sums_are_equal(&self) -> bool {
         let top_row_sum = self.number1 + self.number2 + self.number3;
         let middle_row_sum = self.number4 + self.number5 + self.number6;
