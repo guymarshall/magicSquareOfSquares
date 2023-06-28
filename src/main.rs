@@ -1,7 +1,5 @@
 use rayon::prelude::*;
 
-mod magic_square;
-
 fn numbers_are_unique(numbers: [i32; 9]) -> bool {
     !(numbers[0] == numbers[1]
         || numbers[0] == numbers[2]
