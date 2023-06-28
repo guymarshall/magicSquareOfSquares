@@ -63,7 +63,7 @@ fn sums_are_equal(a: i32, b: i32, c: i32, d: i32, e: i32, f: i32, g: i32, h: i32
 }
 
 fn main() {
-    const LIMIT: i32 = 40;
+    const LIMIT: i32 = 70;
 
     (0..LIMIT).for_each(|a| {
         (0..LIMIT).into_par_iter().for_each(|b| {
@@ -75,8 +75,8 @@ fn main() {
                                 (0..LIMIT).for_each(|h| {
                                     (0..LIMIT).for_each(|i| {
                                         if numbers_are_unique(a, b, c, d, e, f, g, h, i) {
-                                            if sums_are_equal(a, b, c, d, e, f, g, h, i) {
-                                                println!("{:?}", [a, b, c, d, e, f, g, h, i]);
+                                            if sums_are_equal(a * a, b * b, c * c, d * d, e * e, f * f, g * g, h * h, i * i) {
+                                                println!("{:?}", [a * a, b * b, c * c, d * d, e * e, f * f, g * g, h * h, i * i]);
                                             }
                                         }
                                     });
