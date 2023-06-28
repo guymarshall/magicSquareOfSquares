@@ -63,7 +63,7 @@ fn sums_are_equal(a: i32, b: i32, c: i32, d: i32, e: i32, f: i32, g: i32, h: i32
 }
 
 fn main() {
-    const LIMIT: i32 = 70;
+    const LIMIT: i32 = 80;
 
     (0..LIMIT).for_each(|a| {
         (0..LIMIT).into_par_iter().for_each(|b| {
