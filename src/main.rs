@@ -1,44 +1,5 @@
 use rayon::prelude::*;
 
-fn numbers_are_unique(a: i32, b: i32, c: i32, d: i32, e: i32, f: i32, g: i32, h: i32, i: i32) -> bool {
-    !(a == b
-        || a == c
-        || a == d
-        || a == e
-        || a == f
-        || a == g
-        || a == h
-        || a == i
-        || b == c
-        || b == d
-        || b == e
-        || b == f
-        || b == g
-        || b == h
-        || b == i
-        || c == d
-        || c == e
-        || c == f
-        || c == g
-        || c == h
-        || c == i
-        || d == e
-        || d == f
-        || d == g
-        || d == h
-        || d == i
-        || e == f
-        || e == g
-        || e == h
-        || e == i
-        || f == g
-        || f == h
-        || f == i
-        || g == h
-        || g == i
-        || h == i)
-}
-
 fn sums_are_equal(a: i32, b: i32, c: i32, d: i32, e: i32, f: i32, g: i32, h: i32, i: i32) -> bool {
     let top_row_sum: i32 = a + b + c;
     let middle_row_sum: i32 = d + e + f;
@@ -74,7 +35,42 @@ fn main() {
                             (0..LIMIT).for_each(|g| {
                                 (0..LIMIT).for_each(|h| {
                                     (0..LIMIT).for_each(|i| {
-                                        if numbers_are_unique(a, b, c, d, e, f, g, h, i) {
+                                        if !(a == b
+                                            || a == c
+                                            || a == d
+                                            || a == e
+                                            || a == f
+                                            || a == g
+                                            || a == h
+                                            || a == i
+                                            || b == c
+                                            || b == d
+                                            || b == e
+                                            || b == f
+                                            || b == g
+                                            || b == h
+                                            || b == i
+                                            || c == d
+                                            || c == e
+                                            || c == f
+                                            || c == g
+                                            || c == h
+                                            || c == i
+                                            || d == e
+                                            || d == f
+                                            || d == g
+                                            || d == h
+                                            || d == i
+                                            || e == f
+                                            || e == g
+                                            || e == h
+                                            || e == i
+                                            || f == g
+                                            || f == h
+                                            || f == i
+                                            || g == h
+                                            || g == i
+                                            || h == i) {
                                             if sums_are_equal(a * a, b * b, c * c, d * d, e * e, f * f, g * g, h * h, i * i) {
                                                 println!("{:?}", [a * a, b * b, c * c, d * d, e * e, f * f, g * g, h * h, i * i]);
                                             }
