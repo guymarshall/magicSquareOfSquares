@@ -7,7 +7,7 @@ impl Square {
         Square {numbers}
     }
 
-    fn rotate_square(&self) {
+    fn rotate_square(&mut self) {
         self.numbers[10] = self.numbers[0];
         self.numbers.swap(0, 6);
         self.numbers.swap(6, 8);
