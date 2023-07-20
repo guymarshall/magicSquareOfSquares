@@ -1,10 +1,11 @@
 struct Square {
-    numbers: [i32; 10]
+    numbers: [i32; 10],
+    limit: i32
 }
 
 impl Square {
-    fn new(numbers: [i32; 10]) -> Square {
-        Square {numbers}
+    fn new(numbers: [i32; 10], limit: i32) -> Square {
+        Square {numbers, limit}
     }
 
     fn rotate_square(&mut self) {
