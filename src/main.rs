@@ -1,6 +1,10 @@
-use rayon::prelude::*;
+use itertools::Itertools;
 
-fn sums_are_equal(a: i32, b: i32, c: i32, d: i32, e: i32, f: i32, g: i32, h: i32, i: i32) -> bool {
+fn generate_square_numbers(count: i32) -> Vec<i32> {
+    (0..=count).map(|number| number * number).collect()
+}
+
+fn sums_are_equal(a: &i32, b: &i32, c: &i32, d: &i32, e: &i32, f: &i32, g: &i32, h: &i32, i: &i32) -> bool {
     let top_row_sum: i32 = a + b + c;
     let middle_row_sum: i32 = d + e + f;
     let bottom_row_sum: i32 = g + h + i;
@@ -26,63 +30,50 @@ fn sums_are_equal(a: i32, b: i32, c: i32, d: i32, e: i32, f: i32, g: i32, h: i32
 fn main() {
     const LIMIT: i32 = 80;
 
-    (0..LIMIT).for_each(|a| {
-        (0..LIMIT).into_par_iter().for_each(|b| {
-            (0..LIMIT).for_each(|c| {
-                (0..LIMIT).for_each(|d| {
-                    (0..LIMIT).for_each(|e| {
-                        (0..LIMIT).for_each(|f| {
-                            (0..LIMIT).for_each(|g| {
-                                (0..LIMIT).for_each(|h| {
-                                    (0..LIMIT).for_each(|i| {
-                                        if !(a == b
-                                            || a == c
-                                            || a == d
-                                            || a == e
-                                            || a == f
-                                            || a == g
-                                            || a == h
-                                            || a == i
-                                            || b == c
-                                            || b == d
-                                            || b == e
-                                            || b == f
-                                            || b == g
-                                            || b == h
-                                            || b == i
-                                            || c == d
-                                            || c == e
-                                            || c == f
-                                            || c == g
-                                            || c == h
-                                            || c == i
-                                            || d == e
-                                            || d == f
-                                            || d == g
-                                            || d == h
-                                            || d == i
-                                            || e == f
-                                            || e == g
-                                            || e == h
-                                            || e == i
-                                            || f == g
-                                            || f == h
-                                            || f == i
-                                            || g == h
-                                            || g == i
-                                            || h == i) {
-                                            if sums_are_equal(a * a, b * b, c * c, d * d, e * e, f * f, g * g, h * h, i * i) {
-                                                println!("{:?}", [a * a, b * b, c * c, d * d, e * e, f * f, g * g, h * h, i * i]);
-                                            }
-                                        }
-                                    });
-                                });
-                            });
-                        });
-                    });
-                });
-            });
-        });
-        println!("{} / {}", a, LIMIT);
+    let square_numbers: Vec<i32> = generate_square_numbers(LIMIT);
+
+    let permutations = square_numbers.iter().permutations(9);
+
+    permutations.for_each(|permutation| {
+        if !(permutation[0] == permutation[1]
+            || permutation[0] == permutation[2]
+            || permutation[0] == permutation[3]
+            || permutation[0] == permutation[4]
+            || permutation[0] == permutation[5]
+            || permutation[0] == permutation[6]
+            || permutation[0] == permutation[7]
+            || permutation[0] == permutation[8]
+            || permutation[1] == permutation[2]
+            || permutation[1] == permutation[3]
+            || permutation[1] == permutation[4]
+            || permutation[1] == permutation[5]
+            || permutation[1] == permutation[6]
+            || permutation[1] == permutation[7]
+            || permutation[1] == permutation[8]
+            || permutation[2] == permutation[3]
+            || permutation[2] == permutation[4]
+            || permutation[2] == permutation[5]
+            || permutation[2] == permutation[6]
+            || permutation[2] == permutation[7]
+            || permutation[2] == permutation[8]
+            || permutation[3] == permutation[4]
+            || permutation[3] == permutation[5]
+            || permutation[3] == permutation[6]
+            || permutation[3] == permutation[7]
+            || permutation[3] == permutation[8]
+            || permutation[4] == permutation[5]
+            || permutation[4] == permutation[6]
+            || permutation[4] == permutation[7]
+            || permutation[4] == permutation[8]
+            || permutation[5] == permutation[6]
+            || permutation[5] == permutation[7]
+            || permutation[5] == permutation[8]
+            || permutation[6] == permutation[7]
+            || permutation[6] == permutation[8]
+            || permutation[7] == permutation[8]) {
+            if sums_are_equal(permutation[0], permutation[1], permutation[2], permutation[3], permutation[4], permutation[5], permutation[6], permutation[7], permutation[8]) {
+                println!("{:?}", [permutation[0], permutation[1], permutation[2], permutation[3], permutation[4], permutation[5], permutation[6], permutation[7], permutation[8]]);
+            }
+        }
     });
 }
