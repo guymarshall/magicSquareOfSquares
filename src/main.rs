@@ -60,12 +60,12 @@ fn main() {
     // then for every iteration, plug in a different combination of indices
     // for the squares vector
 
-    let indices = (0..9).permutations(9);
+    let indices: itertools::Permutations<std::ops::Range<usize>> = (0..9).permutations(9);
 
-    let combinations = square_numbers.iter().combinations(9);
+    let combinations: itertools::Combinations<std::slice::Iter<'_, i32>> = square_numbers.iter().combinations(9);
 
-    combinations.for_each(|combination| {
-        indices.clone().for_each(|index| {
+    combinations.for_each(|combination: Vec<&i32>| {
+        indices.clone().for_each(|index: Vec<usize>| {
             let data: Vec<i32> = index.iter().map(|&i| combination[i]).cloned().collect();
 
             if sums_are_equal(&data) {
