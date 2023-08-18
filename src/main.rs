@@ -4,28 +4,18 @@ fn generate_square_numbers(count: i32) -> Vec<i32> {
     (0..=count).map(|number| number * number).collect()
 }
 
-fn rotate_90_degrees(layout: Vec<i32>) -> Vec<i32> {
-    vec!(
-        layout[6], layout[3], layout[0],
-        layout[7], layout[4], layout[1],
-        layout[8], layout[5], layout[2],
-    )
-}
+fn rotate_vector(layout: &mut Vec<i32>) {
+    let temp: i32 = layout[0];
+    layout[0] = layout[2];
+    layout[2] = layout[8];
+    layout[8] = layout[6];
+    layout[6] = temp;
 
-fn rotate_180_degrees(layout: Vec<i32>) -> Vec<i32> {
-    vec!(
-        layout[8], layout[7], layout[6],
-        layout[5], layout[4], layout[3],
-        layout[2], layout[1], layout[0],
-    )
-}
-
-fn rotate_270_degrees(layout: Vec<i32>) -> Vec<i32> {
-    vec!(
-        layout[2], layout[5], layout[8],
-        layout[1], layout[4], layout[7],
-        layout[0], layout[3], layout[6],
-    )
+    let temp: i32 = layout[1];
+    layout[1] = layout[5];
+    layout[5] = layout[7];
+    layout[7] = layout[3];
+    layout[3] = temp;
 }
 
 fn sums_are_equal(numbers: &Vec<i32>) -> bool {
