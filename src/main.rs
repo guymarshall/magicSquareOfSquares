@@ -44,16 +44,23 @@ fn sums_are_equal(numbers: &Vec<i32>) -> bool {
 fn main() {
     const LIMIT: i32 = 10;
 
+    print!("Generating square numbers... ");
     let square_numbers: Vec<i32> = generate_square_numbers(LIMIT);
+    println!("Done.");
 
     // generate 9! permutations
     // then for every iteration, plug in a different combination of indices
     // for the squares vector
 
+    print!("Generating indices... ");
     let indices: itertools::Permutations<std::ops::Range<usize>> = (0..9).permutations(9);
+    println!("Done.");
 
+    print!("Generating combinations... ");
     let combinations: itertools::Combinations<std::slice::Iter<'_, i32>> = square_numbers.iter().combinations(9);
+    println!("Done.");
 
+    print!("Processing... ");
     combinations.for_each(|combination: Vec<&i32>| {
         indices.clone().for_each(|index: Vec<usize>| {
             let data: Vec<i32> = index.iter().map(|&i| combination[i]).cloned().collect();
@@ -63,4 +70,5 @@ fn main() {
             }
         });
     });
+    println!("Done.");
 }
