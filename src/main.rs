@@ -52,6 +52,24 @@ fn generate_permutations() -> Vec<Vec<i32>> {
         }
     }
 
+    result.clone().iter().for_each(|permutation| {
+        let rotated_90: Vec<i32> = rotate_vector(permutation.clone());
+        let rotated_180: Vec<i32> = rotate_vector(rotated_90.clone());
+        let rotated_270: Vec<i32> = rotate_vector(rotated_180.clone());
+
+        if let Some(index) = result.iter().position(|value| value == &rotated_90) {
+            result.remove(index);
+        }
+
+        if let Some(index) = result.iter().position(|value| value == &rotated_180) {
+            result.remove(index);
+        }
+
+        if let Some(index) = result.iter().position(|value| value == &rotated_270) {
+            result.remove(index);
+        }
+    });
+
     result
 }
 
