@@ -41,6 +41,26 @@ fn sums_are_equal(numbers: &Vec<i32>) -> bool {
     right_column_sum == nw_se_sum && nw_se_sum == sw_ne_sum
 }
 
+fn generate_permutations() -> Vec<Vec<i32>> {
+    let numbers: Vec<i32> = vec![0, 1, 2, 3, 4, 5, 6, 7, 8];
+    let mut result: Vec<Vec<i32>> = Vec::new();
+    let mut stack: Vec<(i32, Vec<i32>)> = vec![(0, numbers.clone())];
+
+    while let Some((index, mut remaining)) = stack.pop() {
+        if index == 9 {
+            result.push(remaining);
+            continue;
+        }
+
+        for i in index..9 {
+            remaining.swap(index as usize, i as usize);
+            stack.push((index + 1, remaining.clone()));
+        }
+    }
+
+    result
+}
+
 fn main() {
     const LIMIT: i32 = 9;
 
@@ -50,15 +70,15 @@ fn main() {
     // then for every iteration, plug in a different combination of indices
     // for the squares vector
 
-    let indices: itertools::Permutations<std::ops::Range<usize>> = (0..9).permutations(9);
+    let indices: Vec<Vec<i32>> = generate_permutations();
 
     println!("Generating combinations...");
     let combinations: itertools::Combinations<std::slice::Iter<'_, i32>> = square_numbers.iter().combinations(9);
 
     println!("Processing...");
     combinations.for_each(|combination: Vec<&i32>| {
-        indices.clone().for_each(|index: Vec<usize>| {
-            let data: Vec<i32> = index.iter().map(|&i| combination[i]).cloned().collect();
+        indices.clone().iter().for_each(|index| {
+            let data: Vec<i32> = index.iter().map(|&i| combination[i as usize]).cloned().collect();
 
             if sums_are_equal(&data) {
                 println!("{:?}", data);
