@@ -35,6 +35,16 @@ fn sums_are_equal(numbers: &Vec<i32>) -> bool {
     right_column_sum == nw_se_sum && nw_se_sum == sw_ne_sum
 }
 
+fn is_rotated_duplicate(permutation: &[i32], rotated_permutations: &[Vec<i32>]) -> bool {
+    let rotated_90: Vec<i32> = rotate_vector(permutation.to_vec());
+    let rotated_180: Vec<i32> = rotate_vector(rotated_90.clone());
+    let rotated_270: Vec<i32> = rotate_vector(rotated_180.clone());
+
+    rotated_permutations.iter().any(|rotated| {
+        rotated == &rotated_90 || rotated == &rotated_180 || rotated == &rotated_270
+    })
+}
+
 fn generate_permutations() -> Vec<Vec<i32>> {
     let numbers: Vec<i32> = vec![0, 1, 2, 3, 4, 5, 6, 7, 8];
     let mut result: Vec<Vec<i32>> = Vec::new();
@@ -42,7 +52,9 @@ fn generate_permutations() -> Vec<Vec<i32>> {
 
     while let Some((index, mut remaining)) = stack.pop() {
         if index == 9 {
-            result.push(remaining);
+            if !is_rotated_duplicate(&remaining, &result) {
+                result.push(remaining);
+            }
             continue;
         }
 
@@ -51,24 +63,6 @@ fn generate_permutations() -> Vec<Vec<i32>> {
             stack.push((index + 1, remaining.clone()));
         }
     }
-
-    result.clone().iter().for_each(|permutation| {
-        let rotated_90: Vec<i32> = rotate_vector(permutation.clone());
-        let rotated_180: Vec<i32> = rotate_vector(rotated_90.clone());
-        let rotated_270: Vec<i32> = rotate_vector(rotated_180.clone());
-
-        if let Some(index) = result.iter().position(|value| value == &rotated_90) {
-            result.remove(index);
-        }
-
-        if let Some(index) = result.iter().position(|value| value == &rotated_180) {
-            result.remove(index);
-        }
-
-        if let Some(index) = result.iter().position(|value| value == &rotated_270) {
-            result.remove(index);
-        }
-    });
 
     result
 }
