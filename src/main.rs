@@ -1,9 +1,5 @@
 use itertools::Itertools;
 
-fn generate_square_numbers(count: i32) -> Vec<i32> {
-    (0..=count).map(|number| number * number).collect()
-}
-
 fn sums_are_equal(numbers: &Vec<i32>) -> bool {
     let top_row_sum: i32 = numbers[0] + numbers[1] + numbers[2];
     let middle_row_sum: i32 = numbers[3] + numbers[4] + numbers[5];
@@ -30,7 +26,7 @@ fn sums_are_equal(numbers: &Vec<i32>) -> bool {
 fn main() {
     const LIMIT: i32 = 9;
 
-    let square_numbers: Vec<i32> = generate_square_numbers(LIMIT);
+    let square_numbers: Vec<i32> = (0..=LIMIT).map(|i| i * i).collect();
 
     // generate 9! permutations
     // then for every iteration, plug in a different combination of indices
