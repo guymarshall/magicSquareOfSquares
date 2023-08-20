@@ -4,14 +4,6 @@ fn generate_square_numbers(count: i32) -> Vec<i32> {
     (0..=count).map(|number| number * number).collect()
 }
 
-fn rotate_vector(layout: Vec<i32>) -> Vec<i32> {
-    vec!(
-        layout[6], layout[3], layout[0],
-        layout[7], layout[4], layout[1],
-        layout[8], layout[5], layout[2],
-    )
-}
-
 fn sums_are_equal(numbers: &Vec<i32>) -> bool {
     let top_row_sum: i32 = numbers[0] + numbers[1] + numbers[2];
     let middle_row_sum: i32 = numbers[3] + numbers[4] + numbers[5];
@@ -35,38 +27,6 @@ fn sums_are_equal(numbers: &Vec<i32>) -> bool {
     right_column_sum == nw_se_sum && nw_se_sum == sw_ne_sum
 }
 
-fn is_rotated_duplicate(permutation: &[i32], rotated_permutations: &[Vec<i32>]) -> bool {
-    let rotated_90: Vec<i32> = rotate_vector(permutation.to_vec());
-    let rotated_180: Vec<i32> = rotate_vector(rotated_90.clone());
-    let rotated_270: Vec<i32> = rotate_vector(rotated_180.clone());
-
-    rotated_permutations.iter().any(|rotated| {
-        rotated == &rotated_90 || rotated == &rotated_180 || rotated == &rotated_270
-    })
-}
-
-fn generate_permutations() -> Vec<Vec<i32>> {
-    let numbers: Vec<i32> = vec![0, 1, 2, 3, 4, 5, 6, 7, 8];
-    let mut result: Vec<Vec<i32>> = Vec::new();
-    let mut stack: Vec<(i32, Vec<i32>)> = vec![(0, numbers.clone())];
-
-    while let Some((index, mut remaining)) = stack.pop() {
-        if index == 9 {
-            if !is_rotated_duplicate(&remaining, &result) {
-                result.push(remaining);
-            }
-            continue;
-        }
-
-        for i in index..9 {
-            remaining.swap(index as usize, i as usize);
-            stack.push((index + 1, remaining.clone()));
-        }
-    }
-
-    result
-}
-
 fn main() {
     const LIMIT: i32 = 9;
 
@@ -76,8 +36,49 @@ fn main() {
     // then for every iteration, plug in a different combination of indices
     // for the squares vector
 
-    let indices: Vec<Vec<i32>> = generate_permutations();
+    let indices: Vec<Vec<i32>> = (0..9).permutations(9).map(|tuple| tuple.into_iter().collect()).collect();
     println!("Permutation count: {}", indices.len());
+
+    // go through indexes such as flipped and for each flipped rotated vector and loop through them all after generating them
+
+    // let permutations_of_indexes_to_ignore: [[i32; 9]; 19] = [
+    //     // just rotation
+    //     [6, 3, 0, 7, 4, 1, 8, 5, 2],
+    //     [8, 7, 6, 5, 4, 3, 2, 1, 0],
+    //     [2, 5, 8, 1, 4, 7, 0, 3, 6],
+    //
+    //     // just flip nw-se
+    //     [0, 3, 6, 1, 4, 7, 2, 5, 8],
+    //
+    //     // rotations of flip nw-se
+    //     [, , , , , , , , ],
+    //     [, , , , , , , , ],
+    //     [, , , , , , , , ],
+    //
+    //     // just flip sw-ne
+    //     [8, 5, 2, 7, 4, 1, 6, 3, 0],
+    //
+    //     // rotations of flip sw-ne
+    //     [, , , , , , , , ],
+    //     [, , , , , , , , ],
+    //     [, , , , , , , , ],
+    //
+    //     // just flip n-s
+    //     [2, 1, 0, 5, 4, 3, 8, 7, 6],
+    //
+    //     // rotations of flip n-s
+    //     [, , , , , , , , ],
+    //     [, , , , , , , , ],
+    //     [, , , , , , , , ],
+    //
+    //     // just flip w-e
+    //     [6, 7, 8, 3, 4, 5, 0, 1, 2],
+    //
+    //     // rotations of flip w-e
+    //     [, , , , , , , , ],
+    //     [, , , , , , , , ],
+    //     [, , , , , , , , ],
+    // ];
 
     println!("Generating combinations...");
     let combinations: itertools::Combinations<std::slice::Iter<'_, i32>> = square_numbers.iter().combinations(9);
