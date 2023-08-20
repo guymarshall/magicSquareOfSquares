@@ -82,10 +82,10 @@ fn main() {
     println!("Processing...");
     combinations.for_each(|combination: Vec<&i32>| {
         indices.clone().iter().for_each(|index| {
-            let data: Vec<i32> = index.iter().map(|&i| combination[i as usize]).cloned().collect();
+            let numbers: Vec<i32> = index.iter().map(|&i| combination[i as usize]).cloned().collect();
 
-            if sums_are_equal(&data) {
-                println!("{:?}", data);
+            if sums_are_equal(&numbers) {
+                println!("{:?}", numbers);
             }
         });
     });
