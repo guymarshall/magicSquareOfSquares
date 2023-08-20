@@ -32,7 +32,7 @@ fn main() {
     // then for every iteration, plug in a different combination of indices
     // for the squares vector
 
-    let indices: Vec<Vec<i32>> = (0..9).permutations(9).map(|tuple| tuple.into_iter().collect()).collect();
+    let indices: Vec<Vec<i32>> = (0..9).permutations(9).map(|permutation| permutation.into_iter().collect()).collect();
     println!("Permutation count: {}", indices.len());
 
     // go through indexes such as flipped and for each flipped rotated vector and loop through them all after generating them
