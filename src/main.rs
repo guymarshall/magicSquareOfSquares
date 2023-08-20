@@ -83,6 +83,7 @@ fn main() {
     // for the squares vector
 
     let indices: Vec<Vec<i32>> = generate_permutations();
+    println!("Permutation count: {}", indices.len());
 
     println!("Generating combinations...");
     let combinations: itertools::Combinations<std::slice::Iter<'_, i32>> = square_numbers.iter().combinations(9);
