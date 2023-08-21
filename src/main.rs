@@ -1,4 +1,5 @@
 use itertools::Itertools;
+use rayon::prelude::*;
 
 fn sums_are_equal(numbers: &Vec<i32>) -> bool {
     let top_row_sum: i32 = numbers[0] + numbers[1] + numbers[2];
@@ -32,49 +33,48 @@ fn main() {
     // then for every iteration, plug in a different combination of indices
     // for the squares vector
 
-    let indices: Vec<Vec<i32>> = (0..9).permutations(9).map(|permutation| permutation.into_iter().collect()).collect();
+    let unfiltered_indices: Vec<Vec<i32>> = (0..9).permutations(9).map(|permutation| permutation.into_iter().collect()).collect();
+    println!("Permutation count: {}", unfiltered_indices.len());
+
+    let permutations_to_ignore: [[i32; 9]; 7] = [
+        // rotation
+        [6, 3, 0, 7, 4, 1, 8, 5, 2],
+        [8, 7, 6, 5, 4, 3, 2, 1, 0],
+        [2, 5, 8, 1, 4, 7, 0, 3, 6],
+
+        // flip nw-se
+        [0, 3, 6, 1, 4, 7, 2, 5, 8],
+
+        // flip sw-ne
+        [8, 5, 2, 7, 4, 1, 6, 3, 0],
+
+        // flip n-s
+        [2, 1, 0, 5, 4, 3, 8, 7, 6],
+
+        // flip w-e
+        [6, 7, 8, 3, 4, 5, 0, 1, 2],
+    ];
+
+    let indices: Vec<Vec<i32>> = unfiltered_indices
+        .par_iter()
+        .filter(|unfiltered_index| {
+            !permutations_to_ignore.iter().any(|permutation_to_ignore| {
+                unfiltered_indices.contains(&vec![
+                    unfiltered_index[permutation_to_ignore[0] as usize],
+                    unfiltered_index[permutation_to_ignore[1] as usize],
+                    unfiltered_index[permutation_to_ignore[2] as usize],
+                    unfiltered_index[permutation_to_ignore[3] as usize],
+                    unfiltered_index[permutation_to_ignore[4] as usize],
+                    unfiltered_index[permutation_to_ignore[5] as usize],
+                    unfiltered_index[permutation_to_ignore[6] as usize],
+                    unfiltered_index[permutation_to_ignore[7] as usize],
+                    unfiltered_index[permutation_to_ignore[8] as usize]
+                ])
+            })
+        })
+        .cloned()
+        .collect();
     println!("Permutation count: {}", indices.len());
-
-    // go through indexes such as flipped and for each flipped rotated vector and loop through them all after generating them
-
-    // let permutations_of_indexes_to_ignore: [[i32; 9]; 19] = [
-    //     // just rotation
-    //     [6, 3, 0, 7, 4, 1, 8, 5, 2],
-    //     [8, 7, 6, 5, 4, 3, 2, 1, 0],
-    //     [2, 5, 8, 1, 4, 7, 0, 3, 6],
-    //
-    //     // just flip nw-se
-    //     [0, 3, 6, 1, 4, 7, 2, 5, 8],
-    //
-    //     // rotations of flip nw-se
-    //     [, , , , , , , , ],
-    //     [, , , , , , , , ],
-    //     [, , , , , , , , ],
-    //
-    //     // just flip sw-ne
-    //     [8, 5, 2, 7, 4, 1, 6, 3, 0],
-    //
-    //     // rotations of flip sw-ne
-    //     [, , , , , , , , ],
-    //     [, , , , , , , , ],
-    //     [, , , , , , , , ],
-    //
-    //     // just flip n-s
-    //     [2, 1, 0, 5, 4, 3, 8, 7, 6],
-    //
-    //     // rotations of flip n-s
-    //     [, , , , , , , , ],
-    //     [, , , , , , , , ],
-    //     [, , , , , , , , ],
-    //
-    //     // just flip w-e
-    //     [6, 7, 8, 3, 4, 5, 0, 1, 2],
-    //
-    //     // rotations of flip w-e
-    //     [, , , , , , , , ],
-    //     [, , , , , , , , ],
-    //     [, , , , , , , , ],
-    // ];
 
     println!("Generating combinations...");
     let combinations: itertools::Combinations<std::slice::Iter<'_, i32>> = square_numbers.iter().combinations(9);
