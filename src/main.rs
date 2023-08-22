@@ -55,26 +55,23 @@ fn main() {
         [6, 7, 8, 3, 4, 5, 0, 1, 2],
     ];
 
+    // for every unfiltered_index in unfiltered_indices, remove any permutations that match the permutations_to_ignore array
     let indices: Vec<Vec<i32>> = unfiltered_indices
         .par_iter()
-        .filter(|unfiltered_index| {
-            !permutations_to_ignore.iter().any(|permutation_to_ignore| {
-                unfiltered_indices.contains(&vec![
-                    unfiltered_index[permutation_to_ignore[0] as usize],
-                    unfiltered_index[permutation_to_ignore[1] as usize],
-                    unfiltered_index[permutation_to_ignore[2] as usize],
-                    unfiltered_index[permutation_to_ignore[3] as usize],
-                    unfiltered_index[permutation_to_ignore[4] as usize],
-                    unfiltered_index[permutation_to_ignore[5] as usize],
-                    unfiltered_index[permutation_to_ignore[6] as usize],
-                    unfiltered_index[permutation_to_ignore[7] as usize],
-                    unfiltered_index[permutation_to_ignore[8] as usize]
-                ])
-            })
+        .filter(|indices| {
+            permutations_to_ignore
+              .iter()
+              .all(|permutation_to_ignore| {
+                    indices
+                      .iter()
+                      .zip(permutation_to_ignore.iter())
+                      .all(|(index, permutation_index)| index!= permutation_index)
+                })
         })
         .cloned()
         .collect();
-    println!("Permutation count: {}", indices.len());
+
+    println!("Filtered index count: {}", indices.len());
 
     println!("Generating combinations...");
     let combinations: itertools::Combinations<std::slice::Iter<'_, i32>> = square_numbers.iter().combinations(9);
