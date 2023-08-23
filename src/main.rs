@@ -1,5 +1,4 @@
 use itertools::Itertools;
-use rayon::prelude::*;
 
 fn sums_are_equal(numbers: &Vec<i32>) -> bool {
     let top_row_sum: i32 = numbers[0] + numbers[1] + numbers[2];
@@ -25,7 +24,7 @@ fn sums_are_equal(numbers: &Vec<i32>) -> bool {
 }
 
 fn main() {
-    const LIMIT: i32 = 9;
+    const LIMIT: i32 = 18;
 
     let square_numbers: Vec<i32> = (0..=LIMIT).map(|i| i * i).collect();
 
@@ -57,7 +56,7 @@ fn main() {
 
     // for every unfiltered_index in unfiltered_indices, remove any permutations that match the permutations_to_ignore array
     let indices: Vec<Vec<i32>> = unfiltered_indices
-        .par_iter()
+        .iter()
         .filter(|indices| {
             permutations_to_ignore
               .iter()
