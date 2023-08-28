@@ -33,7 +33,6 @@ fn main() {
     // for the squares vector
 
     let unfiltered_indices: Vec<Vec<i32>> = (0..9).permutations(9).map(|permutation| permutation.into_iter().collect()).collect();
-    println!("Permutation count: {}", unfiltered_indices.len());
 
     let permutations_to_ignore: [[i32; 9]; 7] = [
         // rotation
@@ -70,12 +69,8 @@ fn main() {
         .cloned()
         .collect();
 
-    println!("Filtered index count: {}", indices.len());
-
-    println!("Generating combinations...");
     let combinations: itertools::Combinations<std::slice::Iter<'_, i32>> = square_numbers.iter().combinations(9);
 
-    println!("Processing...");
     combinations.for_each(|combination: Vec<&i32>| {
         indices.clone().iter().for_each(|index| {
             let numbers: Vec<i32> = index.iter().map(|&i| combination[i as usize]).cloned().collect();
