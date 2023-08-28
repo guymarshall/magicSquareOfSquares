@@ -1,4 +1,5 @@
 use itertools::Itertools;
+use rayon::prelude::*;
 
 fn sums_are_equal(numbers: &Vec<&i32>) -> bool {
     let top_row_sum: i32 = numbers[0] + numbers[1] + numbers[2];
@@ -24,7 +25,7 @@ fn sums_are_equal(numbers: &Vec<&i32>) -> bool {
 }
 
 fn main() {
-    const LIMIT: i32 = 18;
+    const LIMIT: i32 = 20;
 
     let square_numbers: Vec<i32> = (0..=LIMIT).map(|i| i * i).collect();
 
@@ -71,7 +72,7 @@ fn main() {
 
     let combinations: itertools::Combinations<std::slice::Iter<'_, i32>> = square_numbers.iter().combinations(9);
 
-    combinations.for_each(|combination: Vec<&i32>| {
+    combinations.par_bridge().for_each(|combination: Vec<&i32>| {
         indices.iter().for_each(|index| {
             let numbers: Vec<&i32> = index.iter().map(|&i| combination[i as usize]).collect();
 
