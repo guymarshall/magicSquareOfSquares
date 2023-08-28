@@ -1,6 +1,6 @@
 use itertools::Itertools;
 
-fn sums_are_equal(numbers: &Vec<i32>) -> bool {
+fn sums_are_equal(numbers: &Vec<&i32>) -> bool {
     let top_row_sum: i32 = numbers[0] + numbers[1] + numbers[2];
     let middle_row_sum: i32 = numbers[3] + numbers[4] + numbers[5];
     let bottom_row_sum: i32 = numbers[6] + numbers[7] + numbers[8];
@@ -72,8 +72,8 @@ fn main() {
     let combinations: itertools::Combinations<std::slice::Iter<'_, i32>> = square_numbers.iter().combinations(9);
 
     combinations.for_each(|combination: Vec<&i32>| {
-        indices.clone().iter().for_each(|index| {
-            let numbers: Vec<i32> = index.iter().map(|&i| combination[i as usize]).cloned().collect();
+        indices.iter().for_each(|index| {
+            let numbers: Vec<&i32> = index.iter().map(|&i| combination[i as usize]).collect();
 
             if sums_are_equal(&numbers) {
                 println!("{:?}", numbers);
