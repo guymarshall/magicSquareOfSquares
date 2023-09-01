@@ -59,12 +59,12 @@ fn main() {
         .iter()
         .filter(|indices| {
             permutations_to_ignore
-              .iter()
-              .all(|permutation_to_ignore| {
+                .iter()
+                .all(|permutation_to_ignore| {
                     indices
                       .iter()
                       .zip(permutation_to_ignore.iter())
-                      .all(|(index, permutation_index)| index!= permutation_index)
+                      .all(|(index, permutation_index)| index != permutation_index)
                 })
         })
         .cloned()
