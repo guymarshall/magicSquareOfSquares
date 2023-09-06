@@ -5,7 +5,7 @@ use itertools::Itertools;
 use crate::run::{run_with_avx2, run_without_avx2};
 
 fn main() {
-    const LIMIT: i32 = 12;
+    const LIMIT: i32 = 17;
 
     let square_numbers: Vec<i32> = (0..=LIMIT).map(|i| i * i).collect();
 
