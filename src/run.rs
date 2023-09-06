@@ -1,6 +1,7 @@
 use rayon::prelude::*;
 use crate::sums_are_equal::sums_are_equal;
 
+#[inline(always)]
 pub fn run_avx2(combinations: itertools::Combinations<std::slice::Iter<'_, i32>>, indices: Vec<Vec<i32>>) {
     combinations.par_bridge().for_each(|combination: Vec<&i32>| {
         indices.iter().for_each(|index| {
@@ -13,6 +14,7 @@ pub fn run_avx2(combinations: itertools::Combinations<std::slice::Iter<'_, i32>>
     });
 }
 
+#[inline(always)]
 pub fn run(combinations: itertools::Combinations<std::slice::Iter<'_, i32>>, indices: Vec<Vec<i32>>) {
     combinations.par_bridge().for_each(|combination: Vec<&i32>| {
         indices.iter().for_each(|index| {
