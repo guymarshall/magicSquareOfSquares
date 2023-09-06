@@ -2,7 +2,7 @@ mod sums_are_equal;
 mod run;
 
 use itertools::Itertools;
-use crate::run::{run_with_simd, run_without_simd};
+use crate::run::{run_with_avx2, run_without_avx2};
 
 fn main() {
     const LIMIT: i32 = 12;
@@ -55,10 +55,10 @@ fn main() {
     if is_x86_feature_detected!("avx2") {
         println!("Use AVX2 SIMD instructions");
 
-        run_with_simd(combinations, indices);
+        run_with_avx2(combinations, indices);
     } else {
         println!("Don't use AVX2 SIMD instructions");
 
-        run_without_simd(combinations, indices);
+        run_without_avx2(combinations, indices);
     }
 }
