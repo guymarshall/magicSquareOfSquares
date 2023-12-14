@@ -1,4 +1,4 @@
-pub fn sums_are_equal(numbers: &Vec<&i32>) -> bool {
+pub fn sums_are_equal(numbers: &[&i32]) -> bool {
     let top_row_sum: i32 = numbers[0] + numbers[1] + numbers[2];
     let middle_row_sum: i32 = numbers[3] + numbers[4] + numbers[5];
     let bottom_row_sum: i32 = numbers[6] + numbers[7] + numbers[8];
