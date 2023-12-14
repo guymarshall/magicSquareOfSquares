@@ -11,7 +11,10 @@ pub fn sums_are_equal(numbers: &Vec<&i32>) -> bool {
     let middle_column_sum: i32 = numbers[1] + numbers[4] + numbers[7];
     let right_column_sum: i32 = numbers[2] + numbers[5] + numbers[8];
 
-    if bottom_row_sum != left_column_sum || left_column_sum != middle_column_sum || middle_column_sum != right_column_sum {
+    if bottom_row_sum != left_column_sum
+        || left_column_sum != middle_column_sum
+        || middle_column_sum != right_column_sum
+    {
         return false;
     }
 
