@@ -84,6 +84,30 @@ std::vector<std::vector<int>> generateCombinations(const std::vector<int>& squar
     return combinations;
 }
 
+void processCombinations(const std::vector<std::vector<int>>& combinations, const std::vector<std::vector<int>>& indices) {
+#pragma omp parallel for
+    for (const auto & combination : combinations) {
+        for (const auto& index : indices) {
+            std::vector<int> numbers;
+            numbers.reserve(index.size());
+            for (const int idx : index) {
+                numbers.push_back(combination[idx]);
+            }
+
+            if (sumsAreEqual(numbers)) {
+                // Critical section to ensure synchronized output
+                #pragma omp critical
+                {
+                    for (const int num : numbers) {
+                        std::cout << num << " ";
+                    }
+                    std::cout << std::endl;
+                }
+            }
+        }
+    }
+}
+
 int main() {
     constexpr int32_t limit = 20;
 
@@ -111,21 +135,11 @@ int main() {
     }};
 
     // for every unfiltered_index in unfiltered_indices, remove any permutations that match the permutations_to_ignore array
-    std::vector<std::vector<int>> indices = filterIndices(unfilteredIndices, permutationsToIgnore);
+    const std::vector<std::vector<int>> indices = filterIndices(unfilteredIndices, permutationsToIgnore);
 
-    std::vector<std::vector<int>> result = generateCombinations(squareNumbers, 9);
+    const std::vector<std::vector<int>> combinations = generateCombinations(squareNumbers, 9);
 
-//     combinations
-//         .par_bridge()
-//         .for_each(|combination: Vec<&int>| {
-//             indices.iter().for_each(|index| {
-//                 let numbers: Vec<&int> = index.iter().map(|&i| combination[i as usize]).collect();
-//
-//                 if sums_are_equal(&numbers) {
-//                     println!("{:?}", numbers);
-//                 }
-//             });
-//         });
-    std::cout << "Hello, World!" << std::endl;
+    processCombinations(combinations, indices);
+
     return 0;
 }
