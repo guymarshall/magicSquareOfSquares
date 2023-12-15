@@ -49,14 +49,14 @@ std::vector<std::vector<int32_t>> generateUnfilteredIndices() {
     return unfilteredIndices;
 }
 
-bool shouldKeepPermutation(const std::vector<int>& indices, const std::array<std::array<int, 9>, 7>& permutationsToIgnore) {
-    return std::all_of(permutationsToIgnore.begin(), permutationsToIgnore.end(), [&](const std::array<int, 9>& permutationToIgnore) {
+bool shouldKeepPermutation(const std::vector<int32_t>& indices, const std::array<std::array<int32_t, 9>, 7>& permutationsToIgnore) {
+    return std::all_of(permutationsToIgnore.begin(), permutationsToIgnore.end(), [&](const std::array<int32_t, 9>& permutationToIgnore) {
         return std::mismatch(indices.begin(), indices.end(), permutationToIgnore.begin()).first == indices.end();
     });
 }
 
-std::vector<std::vector<int>> filterIndices(const std::vector<std::vector<int>>& unfilteredIndices, const std::array<std::array<int, 9>, 7>& permutationsToIgnore) {
-    std::vector<std::vector<int>> indices;
+std::vector<std::vector<int32_t>> filterIndices(const std::vector<std::vector<int32_t>>& unfilteredIndices, const std::array<std::array<int32_t, 9>, 7>& permutationsToIgnore) {
+    std::vector<std::vector<int32_t>> indices;
     for (const auto& indices_set : unfilteredIndices) {
         if (shouldKeepPermutation(indices_set, permutationsToIgnore)) {
             indices.push_back(indices_set);
@@ -65,14 +65,14 @@ std::vector<std::vector<int>> filterIndices(const std::vector<std::vector<int>>&
     return indices;
 }
 
-std::vector<std::vector<int>> generateCombinations(const std::vector<int>& squareNumbers, const int combinationSize) {
+std::vector<std::vector<int32_t>> generateCombinations(const std::vector<int32_t>& squareNumbers, const int32_t combinationSize) {
     std::vector<bool> bitmask(squareNumbers.size(), false);
     std::fill_n(bitmask.begin(), combinationSize, true);
 
-    std::vector<std::vector<int>> combinations;
+    std::vector<std::vector<int32_t>> combinations;
 
     do {
-        std::vector<int> temp;
+        std::vector<int32_t> temp;
         for (size_t i = 0; i < squareNumbers.size(); ++i) {
             if (bitmask[i]) {
                 temp.push_back(squareNumbers[i]);
@@ -84,13 +84,13 @@ std::vector<std::vector<int>> generateCombinations(const std::vector<int>& squar
     return combinations;
 }
 
-void processCombinations(const std::vector<std::vector<int>>& combinations, const std::vector<std::vector<int>>& indices) {
+void processCombinations(const std::vector<std::vector<int32_t>>& combinations, const std::vector<std::vector<int32_t>>& indices) {
 #pragma omp parallel for
     for (const auto & combination : combinations) {
         for (const auto& index : indices) {
-            std::vector<int> numbers;
+            std::vector<int32_t> numbers;
             numbers.reserve(index.size());
-            for (const int idx : index) {
+            for (const int32_t idx : index) {
                 numbers.push_back(combination[idx]);
             }
 
@@ -98,7 +98,7 @@ void processCombinations(const std::vector<std::vector<int>>& combinations, cons
                 // Critical section to ensure synchronized output
                 #pragma omp critical
                 {
-                    for (const int num : numbers) {
+                    for (const int32_t num : numbers) {
                         std::cout << num << " ";
                     }
                     std::cout << std::endl;
@@ -117,9 +117,9 @@ int main() {
      // then for every iteration, plug in a different combination of indices
      // for the squares vector
 
-    const std::vector<std::vector<int>> unfilteredIndices = generateUnfilteredIndices();
+    const std::vector<std::vector<int32_t>> unfilteredIndices = generateUnfilteredIndices();
 
-    const std::array<std::array<int, 9>, 7> permutationsToIgnore = {{
+    const std::array<std::array<int32_t, 9>, 7> permutationsToIgnore = {{
         // rotation
         {6, 3, 0, 7, 4, 1, 8, 5, 2},
         {8, 7, 6, 5, 4, 3, 2, 1, 0},
@@ -135,9 +135,9 @@ int main() {
     }};
 
     // for every unfiltered_index in unfiltered_indices, remove any permutations that match the permutations_to_ignore array
-    const std::vector<std::vector<int>> indices = filterIndices(unfilteredIndices, permutationsToIgnore);
+    const std::vector<std::vector<int32_t>> indices = filterIndices(unfilteredIndices, permutationsToIgnore);
 
-    const std::vector<std::vector<int>> combinations = generateCombinations(squareNumbers, 9);
+    const std::vector<std::vector<int32_t>> combinations = generateCombinations(squareNumbers, 9);
 
     processCombinations(combinations, indices);
 
