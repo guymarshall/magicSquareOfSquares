@@ -8,7 +8,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         int limit = scanner.nextInt();
 
-        ArrayList<Integer> squareNumbers = GenerateSquareNumbers.run(limit);
+        int[] squareNumbers = GenerateSquareNumbers.run(limit);
 
         // generate 9! permutations
         // then for every iteration, plug in a different combination of indices

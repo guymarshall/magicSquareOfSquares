@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class GenerateCombinations {
-    public static ArrayList<ArrayList<Integer>> run(ArrayList<Integer> squareNumbers, int combinationSize) {
+    public static ArrayList<ArrayList<Integer>> run(int[] squareNumbers, int combinationSize) {
         // TODO: implement
 //        std::vector bitmask(squareNumbers.size(), false);
 //        std::fill_n(bitmask.begin(), combinationSize, true);
