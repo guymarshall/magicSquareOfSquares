@@ -43,25 +43,25 @@ fn numbers_are_unique(numbers: &[i32; 9]) -> bool {
         || numbers[7] == numbers[8])
 }
 
-fn sums_are_equal(number1: i32, number2: i32, number3: i32, number4: i32, number5: i32, number6: i32, number7: i32, number8: i32, number9: i32) -> bool {
-    let top_row_sum = number1 + number2 + number3;
-    let middle_row_sum = number4 + number5 + number6;
-    let bottom_row_sum = number7 + number8 + number9;
+fn sums_are_equal(numbers: &[i32; 9]) -> bool {
+    let top_row_sum = numbers[0] + numbers[1] + numbers[2];
+    let middle_row_sum = numbers[3] + numbers[4] + numbers[5];
+    let bottom_row_sum = numbers[6] + numbers[7] + numbers[8];
 
     if top_row_sum != middle_row_sum || middle_row_sum != bottom_row_sum {
         return false;
     }
 
-    let left_column_sum = number1 + number4 + number7;
-    let middle_column_sum = number2 + number5 + number8;
-    let right_column_sum = number3 + number6 + number9;
+    let left_column_sum = numbers[0] + numbers[3] + numbers[6];
+    let middle_column_sum = numbers[1] + numbers[4] + numbers[7];
+    let right_column_sum = numbers[2] + numbers[5] + numbers[8];
 
     if bottom_row_sum != left_column_sum || left_column_sum != middle_column_sum || middle_column_sum != right_column_sum {
         return false;
     }
 
-    let nw_se_sum = number1 + number5 + number9;
-    let sw_ne_sum = number7 + number5 + number3;
+    let nw_se_sum = numbers[0] + numbers[4] + numbers[8];
+    let sw_ne_sum = numbers[6] + numbers[4] + numbers[2];
 
     right_column_sum == nw_se_sum && nw_se_sum == sw_ne_sum
 }
