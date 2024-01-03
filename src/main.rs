@@ -1,3 +1,4 @@
+use std::process;
 use crate::magic_square::MagicSquare;
 use rayon::prelude::*;
 
@@ -83,6 +84,7 @@ fn main() {
 
                                             if is_magic {
                                                 println!("{:?}", square);
+                                                process::exit(0);
                                             }
                                         }
                                     });
