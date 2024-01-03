@@ -77,9 +77,7 @@ fn main() {
                             (0..LIMIT).for_each(|g| {
                                 (0..LIMIT).for_each(|h| {
                                     (0..LIMIT).for_each(|i| {
-                                        let numbers_are_unique: bool = numbers_are_unique(a, b, c, d, e, f, g, h, i);
-
-                                        if numbers_are_unique {
+                                        if numbers_are_unique(a, b, c, d, e, f, g, h, i) {
                                             let square: MagicSquare = MagicSquare::new(a, b, c, d, e, f, g, h, i);
                                             let is_magic: bool = square.sums_are_equal();
 
