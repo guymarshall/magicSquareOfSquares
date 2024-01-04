@@ -56,11 +56,9 @@ fn main() {
                                 (0..LIMIT).for_each(|h| {
                                     (0..LIMIT).for_each(|i| {
                                         let square_of_squares: [u32; 9] = [a, b, c, d, e, f, g, h, i];
-                                        if numbers_are_unique(&square_of_squares) {
-                                            if MagicSquare::new(a, b, c, d, e, f, g, h, i).sums_are_equal() {
-                                                println!("{:?}", MagicSquare::new(a, b, c, d, e, f, g, h, i));
-                                                process::exit(0);
-                                            }
+                                        if numbers_are_unique(&square_of_squares) && MagicSquare::new(a, b, c, d, e, f, g, h, i).sums_are_equal() {
+                                            println!("{:?}", MagicSquare::new(a, b, c, d, e, f, g, h, i));
+                                            process::exit(0);
                                         }
                                     });
                                 });
