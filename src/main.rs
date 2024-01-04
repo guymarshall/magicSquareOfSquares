@@ -4,7 +4,7 @@ use rayon::prelude::*;
 
 mod magic_square;
 
-fn numbers_are_unique(numbers: &[i32; 9]) -> bool {
+fn numbers_are_unique(numbers: &[u32; 9]) -> bool {
     !(numbers[0] == numbers[1]
         || numbers[0] == numbers[2]
         || numbers[0] == numbers[3]
@@ -43,31 +43,8 @@ fn numbers_are_unique(numbers: &[i32; 9]) -> bool {
         || numbers[7] == numbers[8])
 }
 
-fn sums_are_equal(numbers: &[i32; 9]) -> bool {
-    let top_row_sum: i32 = numbers[0] + numbers[1] + numbers[2];
-    let middle_row_sum: i32 = numbers[3] + numbers[4] + numbers[5];
-    let bottom_row_sum: i32 = numbers[6] + numbers[7] + numbers[8];
-
-    if top_row_sum != middle_row_sum || middle_row_sum != bottom_row_sum {
-        return false;
-    }
-
-    let left_column_sum: i32 = numbers[0] + numbers[3] + numbers[6];
-    let middle_column_sum: i32 = numbers[1] + numbers[4] + numbers[7];
-    let right_column_sum: i32 = numbers[2] + numbers[5] + numbers[8];
-
-    if bottom_row_sum != left_column_sum || left_column_sum != middle_column_sum || middle_column_sum != right_column_sum {
-        return false;
-    }
-
-    let nw_se_sum: i32 = numbers[0] + numbers[4] + numbers[8];
-    let sw_ne_sum: i32 = numbers[6] + numbers[4] + numbers[2];
-
-    right_column_sum == nw_se_sum && nw_se_sum == sw_ne_sum
-}
-
 fn main() {
-    const LIMIT: i32 = 30;
+    const LIMIT: u32 = 50;
 
     (0..LIMIT).for_each(|a| {
         (0..LIMIT).into_par_iter().for_each(|b| {
@@ -78,14 +55,10 @@ fn main() {
                             (0..LIMIT).for_each(|g| {
                                 (0..LIMIT).for_each(|h| {
                                     (0..LIMIT).for_each(|i| {
-                                        let square_of_squares: [i32; 9] = [a * a, b * b, c * c, d * d, e * e, f * f, g * g, h * h, i * i];
+                                        let square_of_squares: [u32; 9] = [a, b, c, d, e, f, g, h, i];
                                         if numbers_are_unique(&square_of_squares) {
-                                            // if sums_are_equal(&square) {
-                                            //     println!("{:?}", square);
-                                            //     process::exit(0);
-                                            // }
-                                            if MagicSquare::new(a * a, b * b, c * c, d * d, e * e, f * f, g * g, h * h, i * i).sums_are_equal() {
-                                                println!("{:?}", MagicSquare::new(a * a, b * b, c * c, d * d, e * e, f * f, g * g, h * h, i * i));
+                                            if MagicSquare::new(a, b, c, d, e, f, g, h, i).sums_are_equal() {
+                                                println!("{:?}", MagicSquare::new(a, b, c, d, e, f, g, h, i));
                                                 process::exit(0);
                                             }
                                         }
