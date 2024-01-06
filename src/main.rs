@@ -1,8 +1,7 @@
-use std::ops::Range;
 use std::process;
 use rayon::prelude::*;
 
-const fn numbers_are_unique(numbers: &[usize; 9]) -> bool {
+fn numbers_are_unique(numbers: &[&usize; 9]) -> bool {
     !(numbers[0] == numbers[1]
         || numbers[0] == numbers[2]
         || numbers[0] == numbers[3]
@@ -41,7 +40,7 @@ const fn numbers_are_unique(numbers: &[usize; 9]) -> bool {
         || numbers[7] == numbers[8])
 }
 
-const fn sums_are_equal(numbers: &[usize; 9]) -> bool {
+fn sums_are_equal(numbers: &[&usize; 9]) -> bool {
     let top_row_sum: usize = numbers[0] + numbers[1] + numbers[2];
     let middle_row_sum: usize = numbers[3] + numbers[4] + numbers[5];
     let bottom_row_sum: usize = numbers[6] + numbers[7] + numbers[8];
@@ -64,21 +63,34 @@ const fn sums_are_equal(numbers: &[usize; 9]) -> bool {
     right_column_sum == nw_se_sum && nw_se_sum == sw_ne_sum
 }
 
+const fn generate_square_numbers<const COUNT: usize>() -> [usize; COUNT] {
+    let mut numbers: [usize; COUNT] = [0usize; COUNT];
+
+    let mut counter: usize = 0;
+    while counter < COUNT {
+        numbers[counter] = (counter + 1) * (counter + 1);
+        counter += 1;
+    }
+
+    numbers
+}
+
 fn main() {
     const LIMIT: usize = 60;
-    const NUMBER_ITERATOR: Range<usize> = 0..LIMIT;
+    const LIMIT_SQUARED: usize = LIMIT * LIMIT;
+    const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
 
-    NUMBER_ITERATOR.for_each(|a| {
-        NUMBER_ITERATOR.into_par_iter().for_each(|b| {
-            NUMBER_ITERATOR.for_each(|c| {
-                NUMBER_ITERATOR.for_each(|d| {
-                    NUMBER_ITERATOR.for_each(|e| {
-                        NUMBER_ITERATOR.for_each(|f| {
-                            NUMBER_ITERATOR.for_each(|g| {
-                                NUMBER_ITERATOR.for_each(|h| {
-                                    NUMBER_ITERATOR.for_each(|i| {
-                                        if numbers_are_unique(&[a, b, c, d, e, f, g, h, i]) && sums_are_equal(&[a * a, b * b, c * c, d * d, e * e, f * f, g * g, h * h, i * i]) {
-                                            println!("{:?}", [a * a, b * b, c * c, d * d, e * e, f * f, g * g, h * h, i * i]);
+    SQUARE_NUMBERS.iter().for_each(|a| {
+        SQUARE_NUMBERS.par_iter().for_each(|b| {
+            SQUARE_NUMBERS.iter().for_each(|c| {
+                SQUARE_NUMBERS.iter().for_each(|d| {
+                    SQUARE_NUMBERS.iter().for_each(|e| {
+                        SQUARE_NUMBERS.iter().for_each(|f| {
+                            SQUARE_NUMBERS.iter().for_each(|g| {
+                                SQUARE_NUMBERS.iter().for_each(|h| {
+                                    SQUARE_NUMBERS.iter().for_each(|i| {
+                                        if numbers_are_unique(&[a, b, c, d, e, f, g, h, i]) && sums_are_equal(&[a, b, c, d, e, f, g, h, i]) {
+                                            println!("{:?}", [a, b, c, d, e, f, g, h, i]);
                                             process::exit(0);
                                         }
                                     });
@@ -89,6 +101,6 @@ fn main() {
                 });
             });
         });
-        println!("{} / {}", a + 1, LIMIT);
+        println!("{} / {}", a, LIMIT_SQUARED);
     });
 }
