@@ -1,3 +1,4 @@
+use std::ops::Range;
 use std::process;
 use rayon::prelude::*;
 
@@ -65,16 +66,17 @@ fn sums_are_equal(a: i32, b: i32, c: i32, d: i32, e: i32, f: i32, g: i32, h: i32
 
 fn main() {
     const LIMIT: i32 = 60;
+    const NUMBER_ITERATOR: Range<i32> = 0..LIMIT;
 
-    (0..LIMIT).for_each(|a| {
-        (0..LIMIT).into_par_iter().for_each(|b| {
-            (0..LIMIT).for_each(|c| {
-                (0..LIMIT).for_each(|d| {
-                    (0..LIMIT).for_each(|e| {
-                        (0..LIMIT).for_each(|f| {
-                            (0..LIMIT).for_each(|g| {
-                                (0..LIMIT).for_each(|h| {
-                                    (0..LIMIT).for_each(|i| {
+    NUMBER_ITERATOR.for_each(|a| {
+        NUMBER_ITERATOR.into_par_iter().for_each(|b| {
+            NUMBER_ITERATOR.for_each(|c| {
+                NUMBER_ITERATOR.for_each(|d| {
+                    NUMBER_ITERATOR.for_each(|e| {
+                        NUMBER_ITERATOR.for_each(|f| {
+                            NUMBER_ITERATOR.for_each(|g| {
+                                NUMBER_ITERATOR.for_each(|h| {
+                                    NUMBER_ITERATOR.for_each(|i| {
                                         if numbers_are_unique(a, b, c, d, e, f, g, h, i) {
                                             if sums_are_equal(a * a, b * b, c * c, d * d, e * e, f * f, g * g, h * h, i * i) {
                                                 println!("{:?}", [a * a, b * b, c * c, d * d, e * e, f * f, g * g, h * h, i * i]);
