@@ -2,7 +2,7 @@ use std::ops::Range;
 use std::process;
 use rayon::prelude::*;
 
-fn numbers_are_unique(numbers: &[u32; 9]) -> bool {
+const fn numbers_are_unique(numbers: &[u32; 9]) -> bool {
     !(numbers[0] == numbers[1]
         || numbers[0] == numbers[2]
         || numbers[0] == numbers[3]
@@ -41,7 +41,7 @@ fn numbers_are_unique(numbers: &[u32; 9]) -> bool {
         || numbers[7] == numbers[8])
 }
 
-fn sums_are_equal(numbers: &[u32; 9]) -> bool {
+const fn sums_are_equal(numbers: &[u32; 9]) -> bool {
     let top_row_sum: u32 = numbers[0] + numbers[1] + numbers[2];
     let middle_row_sum: u32 = numbers[3] + numbers[4] + numbers[5];
     let bottom_row_sum: u32 = numbers[6] + numbers[7] + numbers[8];
