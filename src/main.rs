@@ -1,3 +1,4 @@
+use std::process;
 use rayon::prelude::*;
 
 fn numbers_are_unique(a: i32, b: i32, c: i32, d: i32, e: i32, f: i32, g: i32, h: i32, i: i32) -> bool {
@@ -77,6 +78,7 @@ fn main() {
                                         if numbers_are_unique(a, b, c, d, e, f, g, h, i) {
                                             if sums_are_equal(a * a, b * b, c * c, d * d, e * e, f * f, g * g, h * h, i * i) {
                                                 println!("{:?}", [a * a, b * b, c * c, d * d, e * e, f * f, g * g, h * h, i * i]);
+                                                process::exit(0);
                                             }
                                         }
                                     });
