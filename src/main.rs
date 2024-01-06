@@ -77,11 +77,9 @@ fn main() {
                             NUMBER_ITERATOR.for_each(|g| {
                                 NUMBER_ITERATOR.for_each(|h| {
                                     NUMBER_ITERATOR.for_each(|i| {
-                                        if numbers_are_unique(a, b, c, d, e, f, g, h, i) {
-                                            if sums_are_equal(a * a, b * b, c * c, d * d, e * e, f * f, g * g, h * h, i * i) {
-                                                println!("{:?}", [a * a, b * b, c * c, d * d, e * e, f * f, g * g, h * h, i * i]);
-                                                process::exit(0);
-                                            }
+                                        if numbers_are_unique(a, b, c, d, e, f, g, h, i) && sums_are_equal(a * a, b * b, c * c, d * d, e * e, f * f, g * g, h * h, i * i) {
+                                            println!("{:?}", [a * a, b * b, c * c, d * d, e * e, f * f, g * g, h * h, i * i]);
+                                            process::exit(0);
                                         }
                                     });
                                 });
