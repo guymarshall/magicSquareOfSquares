@@ -64,7 +64,7 @@ const fn generate_square_numbers<const COUNT: usize>() -> [usize; COUNT] {
 
     let mut counter: usize = 0;
     while counter < COUNT {
-        numbers[counter] = counter * counter;
+        numbers[counter] = (counter + 1) * (counter + 1);
         counter += 1;
     }
 
@@ -74,7 +74,7 @@ const fn generate_square_numbers<const COUNT: usize>() -> [usize; COUNT] {
 fn main() {
     const LIMIT: usize = 60;
     const LIMIT_SQUARED: usize = LIMIT * LIMIT;
-    const SQUARE_NUMBERS: [usize; LIMIT + 1] = generate_square_numbers();
+    const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
 
     let mut lock: StdoutLock = stdout().lock();
 
