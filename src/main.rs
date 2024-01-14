@@ -42,29 +42,21 @@ fn numbers_are_unique(numbers: &[&usize; 9]) -> bool {
 }
 
 fn sums_are_equal(numbers: &[&usize; 9]) -> bool {
-    let top_row_sum: usize = numbers[0] + numbers[1] + numbers[2];
-    let middle_row_sum: usize = numbers[3] + numbers[4] + numbers[5];
-    let bottom_row_sum: usize = numbers[6] + numbers[7] + numbers[8];
-
-    if top_row_sum != middle_row_sum || middle_row_sum != bottom_row_sum {
-        return false;
-    }
-
-    let left_column_sum: usize = numbers[0] + numbers[3] + numbers[6];
-    let middle_column_sum: usize = numbers[1] + numbers[4] + numbers[7];
-    let right_column_sum: usize = numbers[2] + numbers[5] + numbers[8];
-
-    if bottom_row_sum != left_column_sum
-        || left_column_sum != middle_column_sum
-        || middle_column_sum != right_column_sum
+    if (numbers[0] + numbers[1] + numbers[2]) != (numbers[3] + numbers[4] + numbers[5])
+        || (numbers[3] + numbers[4] + numbers[5]) != (numbers[6] + numbers[7] + numbers[8])
     {
         return false;
     }
 
-    let nw_se_sum: usize = numbers[0] + numbers[4] + numbers[8];
-    let sw_ne_sum: usize = numbers[6] + numbers[4] + numbers[2];
+    if (numbers[6] + numbers[7] + numbers[8]) != (numbers[0] + numbers[3] + numbers[6])
+        || (numbers[0] + numbers[3] + numbers[6]) != (numbers[1] + numbers[4] + numbers[7])
+        || (numbers[1] + numbers[4] + numbers[7]) != (numbers[2] + numbers[5] + numbers[8])
+    {
+        return false;
+    }
 
-    right_column_sum == nw_se_sum && nw_se_sum == sw_ne_sum
+    (numbers[2] + numbers[5] + numbers[8]) == (numbers[0] + numbers[4] + numbers[8])
+        && (numbers[0] + numbers[4] + numbers[8]) == (numbers[6] + numbers[4] + numbers[2])
 }
 
 const fn generate_square_numbers<const COUNT: usize>() -> [usize; COUNT] {
