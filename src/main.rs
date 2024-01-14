@@ -1,6 +1,6 @@
-use std::process;
 use rayon::prelude::*;
 use std::io::{stdout, StdoutLock, Write};
+use std::process;
 
 fn numbers_are_unique(numbers: &[&usize; 9]) -> bool {
     numbers[0] != numbers[1]
@@ -54,7 +54,10 @@ fn sums_are_equal(numbers: &[&usize; 9]) -> bool {
     let middle_column_sum: usize = numbers[1] + numbers[4] + numbers[7];
     let right_column_sum: usize = numbers[2] + numbers[5] + numbers[8];
 
-    if bottom_row_sum != left_column_sum || left_column_sum != middle_column_sum || middle_column_sum != right_column_sum {
+    if bottom_row_sum != left_column_sum
+        || left_column_sum != middle_column_sum
+        || middle_column_sum != right_column_sum
+    {
         return false;
     }
 
@@ -92,7 +95,9 @@ fn main() {
                             SQUARE_NUMBERS.iter().for_each(|g| {
                                 SQUARE_NUMBERS.iter().for_each(|h| {
                                     SQUARE_NUMBERS.iter().for_each(|i| {
-                                        if numbers_are_unique(&[a, b, c, d, e, f, g, h, i]) && sums_are_equal(&[a, b, c, d, e, f, g, h, i]) {
+                                        if numbers_are_unique(&[a, b, c, d, e, f, g, h, i])
+                                            && sums_are_equal(&[a, b, c, d, e, f, g, h, i])
+                                        {
                                             println!("{:?}", [a, b, c, d, e, f, g, h, i]);
                                             process::exit(0);
                                         }
