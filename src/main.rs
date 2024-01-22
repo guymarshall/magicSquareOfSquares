@@ -2,10 +2,6 @@ use rayon::prelude::*;
 use std::io::{stdout, StdoutLock, Write};
 use std::process;
 
-const LIMIT: usize = 60;
-const LIMIT_SQUARED: usize = LIMIT * LIMIT;
-const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
-
 fn numbers_are_unique(numbers: &[&usize; 9]) -> bool {
     for i in 0..8 {
         for j in (i + 1)..9 {
@@ -48,6 +44,10 @@ const fn generate_square_numbers<const COUNT: usize>() -> [usize; COUNT] {
 }
 
 fn main() {
+    const LIMIT: usize = 60;
+    const LIMIT_SQUARED: usize = LIMIT * LIMIT;
+    const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
+
     let mut lock: StdoutLock = stdout().lock();
 
     SQUARE_NUMBERS.iter().for_each(|a| {
