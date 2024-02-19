@@ -1,3 +1,5 @@
+import java.util.stream.IntStream;
+
 public class Main
 {
     public static boolean numbersAreUnique(int[] numbers)
@@ -53,7 +55,8 @@ public class Main
 
         for (int a = 0; a < LIMIT; a++)
         {
-            for (int b = 0; b < LIMIT; b++)
+            int finalA = a;
+            IntStream.range(0, LIMIT).parallel().forEach(b ->
             {
                 for (int c = 0; c < LIMIT; c++)
                 {
@@ -69,10 +72,10 @@ public class Main
                                     {
                                         for (int i = 0; i < LIMIT; i++)
                                         {
-                                            if (numbersAreUnique(new int[]{squareNumbers[a], squareNumbers[b], squareNumbers[c], squareNumbers[d], squareNumbers[e], squareNumbers[f], squareNumbers[g], squareNumbers[h], squareNumbers[i]})
-                                                && sumsAreEqual(new int[]{squareNumbers[a], squareNumbers[b], squareNumbers[c], squareNumbers[d], squareNumbers[e], squareNumbers[f], squareNumbers[g], squareNumbers[h], squareNumbers[i]}))
+                                            if (numbersAreUnique(new int[]{squareNumbers[finalA], squareNumbers[b], squareNumbers[c], squareNumbers[d], squareNumbers[e], squareNumbers[f], squareNumbers[g], squareNumbers[h], squareNumbers[i]})
+                                                && sumsAreEqual(new int[]{squareNumbers[finalA], squareNumbers[b], squareNumbers[c], squareNumbers[d], squareNumbers[e], squareNumbers[f], squareNumbers[g], squareNumbers[h], squareNumbers[i]}))
                                             {
-                                                System.out.printf("%d, %d, %d, %d, %d, %d, %d, %d, %d%n", a, b, c, d, e, f, g, h, i);
+                                                System.out.printf("%d, %d, %d, %d, %d, %d, %d, %d, %d%n", finalA, b, c, d, e, f, g, h, i);
                                                 System.exit(0);
                                             }
                                         }
@@ -82,7 +85,7 @@ public class Main
                         }
                     }
                 }
-            }
+            });
             System.out.printf("%d / %d%n", squareNumbers[a], LIMIT_SQUARED);
         }
     }
