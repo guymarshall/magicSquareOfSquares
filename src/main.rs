@@ -1,6 +1,7 @@
 use rayon::prelude::*;
 use std::io::{stdout, StdoutLock, Write};
 use std::process;
+use std::time::Instant;
 
 fn numbers_are_unique(numbers: [&usize; 9]) -> bool {
     for i in 0..8 {
@@ -44,11 +45,13 @@ const fn generate_square_numbers<const COUNT: usize>() -> [usize; COUNT] {
 }
 
 fn main() {
-    const LIMIT: usize = 60;
+    const LIMIT: usize = 10;
     const LIMIT_SQUARED: usize = LIMIT * LIMIT;
     const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
 
     let mut lock: StdoutLock = stdout().lock();
+    
+    let start_time: Instant = Instant::now();
 
     SQUARE_NUMBERS.iter().for_each(|a| {
         SQUARE_NUMBERS.par_iter().for_each(|b| {
@@ -75,4 +78,21 @@ fn main() {
         });
         writeln!(lock, "{} / {}", a, LIMIT_SQUARED).unwrap();
     });
+    
+    let end_time: Instant = Instant::now();
+    
+    println!("Elapsed time: {:?}", end_time - start_time);
 }
+
+/*
+***** PERFORMANCE TESTS (debug running limit of 10 on a AMD Ryzen 5 4600H) *****
+
+using array of numbers - MEAN 18.6561
+    18.6352
+    18.6410
+    18.8808
+    18.5569
+    18.5666
+
+TODO: using individual variables - MEAN X
+*/
