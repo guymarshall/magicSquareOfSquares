@@ -85,7 +85,7 @@ fn main() {
 }
 
 /*
-***** PERFORMANCE TESTS (debug running limit of 10 on a AMD Ryzen 5 4600H) *****
+***** PERFORMANCE TESTS (debug running limit of 10 on an AMD Ryzen 5 4600H) *****
 
 using array of numbers - MEAN 64.6621474
     67.969869
@@ -93,6 +93,4 @@ using array of numbers - MEAN 64.6621474
     51.490696
     71.216327
     67.999905
-
-TODO: using individual variables - MEAN X
 */
