@@ -83,8 +83,8 @@ fn main() {
                             SQUARE_NUMBERS.iter().for_each(|g| {
                                 SQUARE_NUMBERS.iter().for_each(|h| {
                                     SQUARE_NUMBERS.iter().for_each(|i| {
-                                        if numbers_are_unique([a, b, c, d, e, f, g, h, i])
-                                            && sums_are_equal([a, b, c, d, e, f, g, h, i])
+                                        if sums_are_equal([a, b, c, d, e, f, g, h, i])
+                                            && numbers_are_unique([a, b, c, d, e, f, g, h, i])
                                         {
                                             println!("{:?}", [a, b, c, d, e, f, g, h, i]);
                                             process::exit(0);
@@ -121,4 +121,11 @@ new numbers_are_unique implementation - MEAN 47.5416206
     49.633446
     50.446042
     48.364672
+
+swap order of sums_are_equal() and numbers_are_unique() checks - MEAN 8.2879586
+    9.506104
+    9.403209
+    8.990686
+    5.00276
+    8.537034
 */
