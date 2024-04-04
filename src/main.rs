@@ -4,14 +4,35 @@ use std::process;
 use std::time::Instant;
 
 fn numbers_are_unique(numbers: [&usize; 9]) -> bool {
-    for i in 0..8 {
-        for j in (i + 1)..9 {
-            if numbers[i] == numbers[j] {
-                return false;
-            }
-        }
+    if numbers[0] == numbers[1] || numbers[0] == numbers[2] || numbers[0] == numbers[3] || numbers[0] == numbers[4] || numbers[0] == numbers[5] || numbers[0] == numbers[6] || numbers[0] == numbers[7] || numbers[0] == numbers[8] {
+        return false;
     }
-    true
+
+    if numbers[1] == numbers[2] || numbers[1] == numbers[3] || numbers[1] == numbers[4] || numbers[1] == numbers[5] || numbers[1] == numbers[6] || numbers[1] == numbers[7] || numbers[1] == numbers[8] {
+        return false;
+    }
+
+    if numbers[2] == numbers[3] || numbers[2] == numbers[4] || numbers[2] == numbers[5] || numbers[2] == numbers[6] || numbers[2] == numbers[7] || numbers[2] == numbers[8] {
+        return false;
+    }
+
+    if numbers[3] == numbers[4] || numbers[3] == numbers[5] || numbers[3] == numbers[6] || numbers[3] == numbers[7] || numbers[3] == numbers[8] {
+        return false;
+    }
+
+    if numbers[4] == numbers[5] || numbers[4] == numbers[6] || numbers[4] == numbers[7] || numbers[4] == numbers[8] {
+        return false;
+    }
+
+    if numbers[5] == numbers[6] || numbers[5] == numbers[7] || numbers[5] == numbers[8] {
+        return false;
+    }
+
+    if numbers[6] == numbers[7] || numbers[6] == numbers[8] {
+        return false;
+    }
+
+    numbers[7] != numbers[8]
 }
 
 fn sums_are_equal(numbers: [&usize; 9]) -> bool {
@@ -85,7 +106,7 @@ fn main() {
 }
 
 /*
-***** PERFORMANCE TESTS (debug running limit of 10 on an AMD Ryzen 5 4600H) *****
+***** PERFORMANCE TESTS (release running limit of 10 on an AMD Ryzen 5 4600H) *****
 
 using array of numbers - MEAN 64.6621474
     67.969869
@@ -93,4 +114,11 @@ using array of numbers - MEAN 64.6621474
     51.490696
     71.216327
     67.999905
+
+new numbers_are_unique implementation - MEAN 47.5416206
+    43.752971
+    45.510972
+    49.633446
+    50.446042
+    48.364672
 */
