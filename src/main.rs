@@ -91,14 +91,14 @@ fn main() {
 /*
 ***** PERFORMANCE TESTS (release running limit of 10 on an AMD Ryzen 5 4600H) *****
 
-using array of numbers - MEAN 64.6621474
+using array of numbers - MEAN 64.6621474 (debug)
     67.969869
     64.63394
     51.490696
     71.216327
     67.999905
 
-new numbers_are_unique implementation - MEAN 47.5416206
+new numbers_are_unique implementation - MEAN 47.5416206 (debug)
     43.752971
     45.510972
     49.633446
