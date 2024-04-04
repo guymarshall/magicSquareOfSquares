@@ -4,35 +4,18 @@ use std::process;
 use std::time::Instant;
 
 fn numbers_are_unique(numbers: [&usize; 9]) -> bool {
-    if numbers[0] == numbers[1] || numbers[0] == numbers[2] || numbers[0] == numbers[3] || numbers[0] == numbers[4] || numbers[0] == numbers[5] || numbers[0] == numbers[6] || numbers[0] == numbers[7] || numbers[0] == numbers[8] {
-        return false;
+    let mut result: usize = 0;
+
+    for i in 0..8 {
+        for j in (i + 1)..9 {
+            let equal: usize = (numbers[i] == numbers[j]) as usize;
+            // Set corresponding bit in result based on the equality check
+            result |= equal << (i * 8 + j);
+        }
     }
 
-    if numbers[1] == numbers[2] || numbers[1] == numbers[3] || numbers[1] == numbers[4] || numbers[1] == numbers[5] || numbers[1] == numbers[6] || numbers[1] == numbers[7] || numbers[1] == numbers[8] {
-        return false;
-    }
-
-    if numbers[2] == numbers[3] || numbers[2] == numbers[4] || numbers[2] == numbers[5] || numbers[2] == numbers[6] || numbers[2] == numbers[7] || numbers[2] == numbers[8] {
-        return false;
-    }
-
-    if numbers[3] == numbers[4] || numbers[3] == numbers[5] || numbers[3] == numbers[6] || numbers[3] == numbers[7] || numbers[3] == numbers[8] {
-        return false;
-    }
-
-    if numbers[4] == numbers[5] || numbers[4] == numbers[6] || numbers[4] == numbers[7] || numbers[4] == numbers[8] {
-        return false;
-    }
-
-    if numbers[5] == numbers[6] || numbers[5] == numbers[7] || numbers[5] == numbers[8] {
-        return false;
-    }
-
-    if numbers[6] == numbers[7] || numbers[6] == numbers[8] {
-        return false;
-    }
-
-    numbers[7] != numbers[8]
+    // If any bit is set in result, it means there's a duplicate
+    result == 0
 }
 
 fn sums_are_equal(numbers: [&usize; 9]) -> bool {
@@ -128,4 +111,11 @@ swap order of sums_are_equal() and numbers_are_unique() checks - MEAN 8.2879586
     8.990686
     5.00276
     8.537034
+
+make numbers_are_unique() branchless - MEAN 2.1774832
+    2.196753
+    1.888425
+    1.934872
+    2.667156
+    2.20021
 */
