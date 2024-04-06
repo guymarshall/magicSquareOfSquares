@@ -4,18 +4,14 @@ use std::process;
 use std::time::Instant;
 
 fn numbers_are_unique(numbers: [&usize; 9]) -> bool {
-    let mut result: usize = 0;
-
     for i in 0..8 {
         for j in (i + 1)..9 {
-            let equal: usize = (numbers[i] == numbers[j]) as usize;
-            // Set corresponding bit in result based on the equality check
-            result |= equal << (i * 8 + j);
+            if numbers[i] == numbers[j] {
+                return false;
+            }
         }
     }
-
-    // If any bit is set in result, it means there's a duplicate
-    result == 0
+    true
 }
 
 fn sums_are_equal(numbers: [&usize; 9]) -> bool {
