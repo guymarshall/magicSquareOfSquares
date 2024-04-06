@@ -87,35 +87,3 @@ fn main() {
 
     println!("Elapsed time: {:?}", end_time - start_time);
 }
-
-/*
-***** PERFORMANCE TESTS (release running limit of 10 on an AMD Ryzen 5 4600H) *****
-
-using array of numbers - MEAN 64.6621474 (debug)
-    67.969869
-    64.63394
-    51.490696
-    71.216327
-    67.999905
-
-new numbers_are_unique implementation - MEAN 47.5416206 (debug)
-    43.752971
-    45.510972
-    49.633446
-    50.446042
-    48.364672
-
-swap order of sums_are_equal() and numbers_are_unique() checks - MEAN 8.2879586
-    9.506104
-    9.403209
-    8.990686
-    5.00276
-    8.537034
-
-make numbers_are_unique() branchless - MEAN 2.1774832
-    2.196753
-    1.888425
-    1.934872
-    2.667156
-    2.20021
-*/
