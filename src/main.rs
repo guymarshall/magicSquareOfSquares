@@ -47,7 +47,7 @@ const fn generate_square_numbers<const COUNT: usize>() -> [usize; COUNT] {
 fn main() {
     let start_time: Instant = Instant::now();
 
-    const LIMIT: usize = 60;
+    const LIMIT: usize = 100;
     const LIMIT_SQUARED: usize = LIMIT * LIMIT;
     const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
 
