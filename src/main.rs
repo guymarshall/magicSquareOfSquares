@@ -14,22 +14,22 @@ fn numbers_are_unique(numbers: [&usize; 9]) -> bool {
     true
 }
 
-fn sums_are_equal(numbers: [&usize; 9]) -> bool {
-    if (numbers[0] + numbers[1] + numbers[2]) != (numbers[3] + numbers[4] + numbers[5])
-        || (numbers[3] + numbers[4] + numbers[5]) != (numbers[6] + numbers[7] + numbers[8])
+fn sums_are_equal(first: &usize, second: &usize, third: &usize, fourth: &usize, fifth: &usize, sixth: &usize, seventh: &usize, eighth: &usize, ninth: &usize) -> bool {
+    if (first + second + third) != (fourth + fifth + sixth)
+        || (fourth + fifth + sixth) != (seventh + eighth + ninth)
     {
         return false;
     }
 
-    if (numbers[6] + numbers[7] + numbers[8]) != (numbers[0] + numbers[3] + numbers[6])
-        || (numbers[0] + numbers[3] + numbers[6]) != (numbers[1] + numbers[4] + numbers[7])
-        || (numbers[1] + numbers[4] + numbers[7]) != (numbers[2] + numbers[5] + numbers[8])
+    if (seventh + eighth + ninth) != (first + fourth + seventh)
+        || (first + fourth + seventh) != (second + fifth + eighth)
+        || (second + fifth + eighth) != (third + sixth + ninth)
     {
         return false;
     }
 
-    (numbers[2] + numbers[5] + numbers[8]) == (numbers[0] + numbers[4] + numbers[8])
-        && (numbers[0] + numbers[4] + numbers[8]) == (numbers[6] + numbers[4] + numbers[2])
+    (third + sixth + ninth) == (first + fifth + ninth)
+        && (first + fifth + ninth) == (seventh + fifth + third)
 }
 
 const fn generate_square_numbers<const COUNT: usize>() -> [usize; COUNT] {
@@ -60,7 +60,7 @@ fn main() {
                             SQUARE_NUMBERS.iter().for_each(|g| {
                                 SQUARE_NUMBERS.iter().for_each(|h| {
                                     SQUARE_NUMBERS.iter().for_each(|i| {
-                                        if sums_are_equal([a, b, c, d, e, f, g, h, i])
+                                        if sums_are_equal(a, b, c, d, e, f, g, h, i)
                                             && numbers_are_unique([a, b, c, d, e, f, g, h, i])
                                         {
                                             println!("{:?}", [a, b, c, d, e, f, g, h, i]);
