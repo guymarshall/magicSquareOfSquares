@@ -52,8 +52,8 @@ fn main() {
     const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
 
     SQUARE_NUMBERS.iter().for_each(|a| {
-        SQUARE_NUMBERS.par_iter().for_each(|b| {
-            SQUARE_NUMBERS.iter().for_each(|c| {
+        SQUARE_NUMBERS.iter().for_each(|b| {
+            SQUARE_NUMBERS.par_iter().for_each(|c| {
                 SQUARE_NUMBERS.iter().for_each(|d| {
                     SQUARE_NUMBERS.iter().for_each(|e| {
                         SQUARE_NUMBERS.iter().for_each(|f| {
