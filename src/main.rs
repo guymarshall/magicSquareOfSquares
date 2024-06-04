@@ -21,7 +21,7 @@ const fn generate_square_numbers<const COUNT: usize>() -> [usize; COUNT] {
 fn main() {
     let start_time: Instant = Instant::now();
 
-    const LIMIT: usize = 120;
+    const LIMIT: usize = 100;
     const LIMIT_SQUARED: usize = LIMIT * LIMIT;
     const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
 
@@ -35,9 +35,7 @@ fn main() {
                                 SQUARE_NUMBERS.iter().for_each(|eighth| {
                                     SQUARE_NUMBERS.iter().for_each(|ninth| {
                                         let square: Square = Square {first, second, third, fourth, fifth, sixth, seventh, eighth, ninth};
-                                        if square.sums_are_equal()
-                                            && square.numbers_are_unique()
-                                        {
+                                        if square.sums_are_equal() && square.numbers_are_unique() {
                                             println!("{:?}", [first, second, third, fourth, fifth, sixth, seventh, eighth, ninth]);
                                             process::exit(0);
                                         }
