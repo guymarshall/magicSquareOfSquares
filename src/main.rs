@@ -47,7 +47,7 @@ fn main() {
                 });
             });
         });
-        println!("{} / {}", first, LIMIT_SQUARED);
+        println!("{:.2}%", (*first as f64 / LIMIT_SQUARED as f64) * 100.0);
     });
 
     let end_time: Instant = Instant::now();
