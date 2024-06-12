@@ -21,8 +21,7 @@ const fn generate_square_numbers<const COUNT: usize>() -> [usize; COUNT] {
 fn main() {
     let start_time: Instant = Instant::now();
 
-    const LIMIT: usize = 100;
-    const LIMIT_SQUARED: usize = LIMIT * LIMIT;
+    const LIMIT: usize = 200;
     const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
 
     SQUARE_NUMBERS.iter().for_each(|first| {
@@ -47,7 +46,7 @@ fn main() {
                 });
             });
         });
-        println!("{:.2}%", (*first as f64 / LIMIT_SQUARED as f64) * 100.0);
+        println!("{} / {}", (*first as f32).sqrt(), LIMIT);
     });
 
     let end_time: Instant = Instant::now();
