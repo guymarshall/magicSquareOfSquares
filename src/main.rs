@@ -24,26 +24,28 @@ fn main() {
     const LIMIT: usize = 100;
     const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
 
-    SQUARE_NUMBERS.iter().for_each(|first| {
-        SQUARE_NUMBERS.par_iter().for_each(|second| {
-            SQUARE_NUMBERS.iter().for_each(|third| {
-                SQUARE_NUMBERS.iter().for_each(|fourth| {
-                    SQUARE_NUMBERS.iter().for_each(|fifth| {
-                        SQUARE_NUMBERS.iter().for_each(|sixth| {
-                            SQUARE_NUMBERS.iter().for_each(|seventh| {
-                                SQUARE_NUMBERS.iter().for_each(|eighth| {
-                                    SQUARE_NUMBERS.iter().for_each(|ninth| {
-                                        if sums_are_equal([*first, *second, *third, *fourth, *fifth, *sixth, *seventh, *eighth, *ninth]) && numbers_are_unique([*first, *second, *third, *fourth, *fifth, *sixth, *seventh, *eighth, *ninth]) {
-                                            println!("{:?}", [first, second, third, fourth, fifth, sixth, seventh, eighth, ninth]);
-                                            process::exit(0);
-                                        }
+    SQUARE_NUMBERS.iter().for_each(|first: &usize| {
+        SQUARE_NUMBERS.par_iter().for_each(|second: &usize| {
+            if second != first {
+                SQUARE_NUMBERS.iter().for_each(|third: &usize| {
+                    SQUARE_NUMBERS.iter().for_each(|fourth: &usize| {
+                        SQUARE_NUMBERS.iter().for_each(|fifth: &usize| {
+                            SQUARE_NUMBERS.iter().for_each(|sixth: &usize| {
+                                SQUARE_NUMBERS.iter().for_each(|seventh: &usize| {
+                                    SQUARE_NUMBERS.iter().for_each(|eighth: &usize| {
+                                        SQUARE_NUMBERS.iter().for_each(|ninth: &usize| {
+                                            if sums_are_equal([*first, *second, *third, *fourth, *fifth, *sixth, *seventh, *eighth, *ninth]) && numbers_are_unique([*first, *second, *third, *fourth, *fifth, *sixth, *seventh, *eighth, *ninth]) {
+                                                println!("{:?}", [first, second, third, fourth, fifth, sixth, seventh, eighth, ninth]);
+                                                process::exit(0);
+                                            }
+                                        });
                                     });
                                 });
                             });
                         });
                     });
                 });
-            });
+            }
         });
         println!("{} / {}", (*first as f32).sqrt(), LIMIT);
     });
