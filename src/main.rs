@@ -2,6 +2,7 @@ mod square;
 
 use std::process;
 use std::time::Instant;
+use rayon::prelude::*;
 
 use crate::square::{numbers_are_unique, sums_are_equal};
 
@@ -24,7 +25,7 @@ fn main() {
     const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
 
     SQUARE_NUMBERS.iter().for_each(|first| {
-        SQUARE_NUMBERS.iter().for_each(|second| {
+        SQUARE_NUMBERS.par_iter().for_each(|second| {
             SQUARE_NUMBERS.iter().for_each(|third| {
                 SQUARE_NUMBERS.iter().for_each(|fourth| {
                     SQUARE_NUMBERS.iter().for_each(|fifth| {
