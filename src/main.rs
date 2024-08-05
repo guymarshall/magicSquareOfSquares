@@ -1,8 +1,8 @@
 mod square;
 
+use rayon::prelude::*;
 use std::process;
 use std::time::Instant;
-use rayon::prelude::*;
 
 use crate::square::{numbers_are_unique, sums_are_equal};
 
@@ -34,8 +34,20 @@ fn main() {
                                 SQUARE_NUMBERS.iter().for_each(|seventh: &usize| {
                                     SQUARE_NUMBERS.iter().for_each(|eighth: &usize| {
                                         SQUARE_NUMBERS.iter().for_each(|ninth: &usize| {
-                                            if sums_are_equal([*first, *second, *third, *fourth, *fifth, *sixth, *seventh, *eighth, *ninth]) && numbers_are_unique([*first, *second, *third, *fourth, *fifth, *sixth, *seventh, *eighth, *ninth]) {
-                                                println!("{:?}", [first, second, third, fourth, fifth, sixth, seventh, eighth, ninth]);
+                                            if sums_are_equal([
+                                                *first, *second, *third, *fourth, *fifth, *sixth,
+                                                *seventh, *eighth, *ninth,
+                                            ]) && numbers_are_unique([
+                                                *first, *second, *third, *fourth, *fifth, *sixth,
+                                                *seventh, *eighth, *ninth,
+                                            ]) {
+                                                println!(
+                                                    "{:?}",
+                                                    [
+                                                        first, second, third, fourth, fifth, sixth,
+                                                        seventh, eighth, ninth
+                                                    ]
+                                                );
                                                 process::exit(0);
                                             }
                                         });
