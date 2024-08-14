@@ -1,3 +1,4 @@
+#[inline(always)]
 pub(crate) fn numbers_are_unique(numbers: [usize; 9]) -> bool {
     numbers[0] != numbers[1]
         && numbers[0] != numbers[2]
@@ -37,6 +38,7 @@ pub(crate) fn numbers_are_unique(numbers: [usize; 9]) -> bool {
         && numbers[7] != numbers[8]
 }
 
+#[inline(always)]
 pub(crate) fn sums_are_equal(numbers: [usize; 9]) -> bool {
     if (numbers[0] + numbers[1] + numbers[2]) != (numbers[3] + numbers[4] + numbers[5])
         || (numbers[3] + numbers[4] + numbers[5]) != (numbers[6] + numbers[7] + numbers[8])
