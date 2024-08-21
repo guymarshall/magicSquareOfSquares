@@ -4,7 +4,7 @@ use rayon::prelude::*;
 use std::process;
 use std::time::Instant;
 
-use crate::square::{numbers_are_unique, sums_are_equal};
+use crate::square::Square;
 
 const fn generate_square_numbers<const COUNT: usize>() -> [usize; COUNT] {
     let mut numbers: [usize; COUNT] = [0usize; COUNT];
@@ -34,8 +34,43 @@ fn main() {
                                 SQUARE_NUMBERS.iter().for_each(|seventh: &usize| {
                                     SQUARE_NUMBERS.iter().for_each(|eighth: &usize| {
                                         SQUARE_NUMBERS.iter().for_each(|ninth: &usize| {
-                                            if sums_are_equal(first, second, third, fourth, fifth, sixth, seventh, eighth, ninth) && numbers_are_unique(first, second, third, fourth, fifth, sixth, seventh, eighth, ninth) {
-                                                println!("\n\n{}, {}, {}\n{}, {}, {}\n{}, {}, {}\n\n", first, second, third, fourth, fifth, sixth, seventh, eighth, ninth);
+                                            if (Square {
+                                                first,
+                                                second,
+                                                third,
+                                                fourth,
+                                                fifth,
+                                                sixth,
+                                                seventh,
+                                                eighth,
+                                                ninth,
+                                            })
+                                            .sums_are_equal()
+                                                && (Square {
+                                                    first,
+                                                    second,
+                                                    third,
+                                                    fourth,
+                                                    fifth,
+                                                    sixth,
+                                                    seventh,
+                                                    eighth,
+                                                    ninth,
+                                                })
+                                                .numbers_are_unique()
+                                            {
+                                                println!(
+                                                    "\n\n{}, {}, {}\n{}, {}, {}\n{}, {}, {}\n\n",
+                                                    first,
+                                                    second,
+                                                    third,
+                                                    fourth,
+                                                    fifth,
+                                                    sixth,
+                                                    seventh,
+                                                    eighth,
+                                                    ninth
+                                                );
                                                 process::exit(0);
                                             }
                                         });
