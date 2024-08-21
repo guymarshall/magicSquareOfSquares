@@ -34,20 +34,8 @@ fn main() {
                                 SQUARE_NUMBERS.iter().for_each(|seventh: &usize| {
                                     SQUARE_NUMBERS.iter().for_each(|eighth: &usize| {
                                         SQUARE_NUMBERS.iter().for_each(|ninth: &usize| {
-                                            if sums_are_equal([
-                                                *first, *second, *third, *fourth, *fifth, *sixth,
-                                                *seventh, *eighth, *ninth,
-                                            ]) && numbers_are_unique([
-                                                *first, *second, *third, *fourth, *fifth, *sixth,
-                                                *seventh, *eighth, *ninth,
-                                            ]) {
-                                                println!(
-                                                    "{:?}",
-                                                    [
-                                                        first, second, third, fourth, fifth, sixth,
-                                                        seventh, eighth, ninth
-                                                    ]
-                                                );
+                                            if sums_are_equal(first, second, third, fourth, fifth, sixth, seventh, eighth, ninth) && numbers_are_unique(first, second, third, fourth, fifth, sixth, seventh, eighth, ninth) {
+                                                println!("\n\n{}, {}, {}\n{}, {}, {}\n{}, {}, {}\n\n", first, second, third, fourth, fifth, sixth, seventh, eighth, ninth);
                                                 process::exit(0);
                                             }
                                         });

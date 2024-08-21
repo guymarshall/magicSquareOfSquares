@@ -1,30 +1,17 @@
 #[inline(always)]
-pub(crate) fn numbers_are_unique(numbers: [usize; 9]) -> bool {
-    for i in 0..numbers.len() {
-        for j in (i + 1)..numbers.len() {
-            if numbers[i] == numbers[j] {
-                return false;
-            }
-        }
-    }
-    true
+pub(crate) fn numbers_are_unique(first: &usize, second: &usize, third: &usize, fourth: &usize, fifth: &usize, sixth: &usize, seventh: &usize, eighth: &usize, ninth: &usize) -> bool {
+    first != second && first != third && first != fourth && first != fifth && first != sixth && first != seventh && first != eighth && first != ninth && second != third && second != fourth && second != fifth && second != sixth && second != seventh && second != eighth && second != ninth && third != fourth && third != fifth && third != sixth && third != seventh && third != eighth && third != ninth && fourth != fifth && fourth != sixth && fourth != seventh && fourth != eighth && fourth != ninth && fifth != sixth && fifth != seventh && fifth != eighth && fifth != ninth && sixth != seventh && sixth != eighth && sixth != ninth && seventh != eighth && seventh != ninth && eighth != ninth
 }
 
 #[inline(always)]
-pub(crate) fn sums_are_equal(numbers: [usize; 9]) -> bool {
-    if (numbers[0] + numbers[1] + numbers[2]) != (numbers[3] + numbers[4] + numbers[5])
-        || (numbers[3] + numbers[4] + numbers[5]) != (numbers[6] + numbers[7] + numbers[8])
-    {
+pub(crate) fn sums_are_equal(first: &usize, second: &usize, third: &usize, fourth: &usize, fifth: &usize, sixth: &usize, seventh: &usize, eighth: &usize, ninth: &usize) -> bool {
+    if (first + second + third) != (fourth + fifth + sixth) || (fourth + fifth + sixth) != (seventh + eighth + ninth) {
         return false;
     }
 
-    if (numbers[6] + numbers[7] + numbers[8]) != (numbers[0] + numbers[3] + numbers[6])
-        || (numbers[0] + numbers[3] + numbers[6]) != (numbers[1] + numbers[4] + numbers[7])
-        || (numbers[1] + numbers[4] + numbers[7]) != (numbers[2] + numbers[5] + numbers[8])
-    {
+    if (seventh + eighth + ninth) != (first + fourth + seventh) || (first + fourth + seventh) != (second + fifth + eighth) || (second + fifth + eighth) != (third + sixth + ninth) {
         return false;
     }
 
-    (numbers[2] + numbers[5] + numbers[8]) == (numbers[0] + numbers[4] + numbers[8])
-        && (numbers[0] + numbers[4] + numbers[8]) == (numbers[6] + numbers[4] + numbers[2])
+    (third + sixth + ninth) == (first + fifth + ninth) && (first + fifth + ninth) == (seventh + fifth + third)
 }
