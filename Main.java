@@ -8,8 +8,7 @@ public class Main {
     public static void main(String[] args) {
         final int[] SQUARE_NUMBERS = IntStream.range(0, LIMIT).map(i -> (i + 1) * (i + 1)).toArray();
 
-        // final int mostFrequentTotal = Square.getMostFrequentTotal(SQUARE_NUMBERS);
-        final int mostFrequentTotal = 1003001;
+        final int mostFrequentTotal = Square.getMostFrequentTotal(SQUARE_NUMBERS);
 
         System.out.printf("The most frequent total is %d%n", mostFrequentTotal);
 
@@ -30,7 +29,7 @@ public class Main {
                     final double progress = ((double) currentIteration / (double) TOTAL_ITERATIONS) * 100.0;
 
                     if (currentIteration % (TOTAL_ITERATIONS / 1000) == 0) {
-                        System.out.printf("Progress: %.1f%n", progress);
+                        System.out.printf("Generating triplets: %.1f%%%n", progress);
                     }
                 }
             }
@@ -86,7 +85,7 @@ public class Main {
             final double progress = ((double) index / (double) count) * 100.0;
 
             if (index % (count / 1000) == 0) {
-                System.out.printf("Progress: %.1f%n", progress);
+                System.out.printf("Checking triples: %.1f%%%n", progress);
             }
 
             index++;

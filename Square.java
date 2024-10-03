@@ -18,7 +18,7 @@ public class Square {
                     final double PROGRESS = ((double) currentIteration / (double) TOTAL_ITERATIONS) * 100.0;
 
                     if (currentIteration % (TOTAL_ITERATIONS / 1000) == 0) {
-                        System.out.printf("Progress: %.1f%n", PROGRESS);
+                        System.out.printf("Getting most frequent total: %.1f%%%n", PROGRESS);
                     }
                 }
             }
