@@ -4,19 +4,19 @@ use std::time::Instant;
 
 const LIMIT: usize = 1000;
 
-// const fn generate_square_numbers<const LIMIT: usize>() -> [usize; LIMIT] {
-//     let mut numbers: [usize; LIMIT] = [0usize; LIMIT];
+const fn generate_square_numbers<const LIMIT: usize>() -> [usize; LIMIT] {
+    let mut numbers: [usize; LIMIT] = [0usize; LIMIT];
 
-//     let mut counter: usize = 0;
-//     while counter < LIMIT {
-//         numbers[counter] = (counter + 1) * (counter + 1);
-//         counter += 1;
-//     }
+    let mut counter: usize = 0;
+    while counter < LIMIT {
+        numbers[counter] = (counter + 1) * (counter + 1);
+        counter += 1;
+    }
 
-//     numbers
-// }
+    numbers
+}
 
-pub(crate) fn get_most_frequent_total(square_numbers: &Vec<usize>) -> usize {
+pub(crate) fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> usize {
     const TOTAL_ITERATIONS: usize = LIMIT * LIMIT * LIMIT;
     let mut current_iteration: usize = 0;
     let mut totals_and_counts: HashMap<usize, usize> = HashMap::new();
@@ -90,12 +90,9 @@ pub(crate) fn numbers_are_unique(numbers: &[usize; 9]) -> bool {
 fn main() {
     let start_time: Instant = Instant::now();
 
-    // const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
-    let square_numbers: Vec<usize> = (0..LIMIT)
-        .map(|number: usize| (number + 1) * (number + 1))
-        .collect();
+    const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
 
-    let most_frequent_total: usize = get_most_frequent_total(&square_numbers);
+    let most_frequent_total: usize = get_most_frequent_total(&SQUARE_NUMBERS);
 
     println!("The most frequent total is {}", most_frequent_total);
 
@@ -103,9 +100,9 @@ fn main() {
     let mut current_iteration: usize = 0;
     let mut triplets_that_make_total: Vec<[usize; 3]> = vec![];
 
-    for first in &square_numbers {
-        for second in &square_numbers {
-            for third in &square_numbers {
+    for first in &SQUARE_NUMBERS {
+        for second in &SQUARE_NUMBERS {
+            for third in &SQUARE_NUMBERS {
                 let total: usize = first + second + third;
 
                 if total == most_frequent_total {
