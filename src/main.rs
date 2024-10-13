@@ -1,6 +1,10 @@
+mod database;
+
 use std::collections::HashMap;
 use std::process::exit;
 use std::time::Instant;
+
+use database::{clear_totals, get_total_with_highest_count, insert};
 
 const LIMIT: usize = 1000;
 
@@ -16,12 +20,12 @@ const fn generate_square_numbers<const LIMIT: usize>() -> [usize; LIMIT] {
     numbers
 }
 
-pub(crate) fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> usize {
+pub(crate) fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> Option<usize> {
     const TOTAL_ITERATIONS: usize = LIMIT * LIMIT * LIMIT;
     let mut current_iteration: usize = 0;
-    let mut totals_and_counts: HashMap<usize, usize> = HashMap::new();
 
     for first in square_numbers {
+        let mut totals_and_counts: HashMap<usize, usize> = HashMap::new();
         for second in square_numbers {
             for third in square_numbers {
                 let total: usize = first + second + third;
@@ -36,15 +40,11 @@ pub(crate) fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> usize 
                 }
             }
         }
+        insert(totals_and_counts).expect("Failed to insert totals and counts");
+        // TODO: maybe create totals_and_counts once and at the end of this loop clear it?
     }
 
-    let total_with_highest_count: usize = totals_and_counts
-        .iter()
-        .max_by_key(|&(_, count)| count)
-        .map(|(&total, _)| total)
-        .unwrap();
-
-    total_with_highest_count
+    get_total_with_highest_count().expect("Failed to get total with highest count")
 }
 
 #[inline(always)]
@@ -90,9 +90,11 @@ pub(crate) fn numbers_are_unique(numbers: &[usize; 9]) -> bool {
 fn main() {
     let start_time: Instant = Instant::now();
 
+    clear_totals().expect("Failed to clear totals");
+
     const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
 
-    let most_frequent_total: usize = get_most_frequent_total(&SQUARE_NUMBERS);
+    let most_frequent_total: usize = get_most_frequent_total(&SQUARE_NUMBERS).unwrap();
 
     println!("The most frequent total is {}", most_frequent_total);
 
