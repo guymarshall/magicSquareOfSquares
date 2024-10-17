@@ -29,12 +29,12 @@ pub(crate) fn clear_totals() -> Result<()> {
     Ok(())
 }
 
-pub(crate) fn insert(totals_and_counts: HashMap<usize, usize>) -> Result<()> {
+pub(crate) fn insert(totals_and_counts: &HashMap<usize, usize>) -> Result<()> {
     let mut pooled_connection: PooledConn = POOL.get_conn().expect("Failed to get connection");
 
     let mut values: Vec<String> = Vec::new();
 
-    for (&total, &count) in &totals_and_counts {
+    for (&total, &count) in totals_and_counts {
         values.push(format!("({}, {})", total, count));
     }
 

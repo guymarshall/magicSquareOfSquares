@@ -40,8 +40,7 @@ pub(crate) fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> Option
                 }
             }
         }
-        insert(totals_and_counts).expect("Failed to insert totals and counts");
-        // TODO: maybe create totals_and_counts once and at the end of this loop clear it?
+        insert(&totals_and_counts).expect("Failed to insert totals and counts");
     }
 
     get_total_with_highest_count().expect("Failed to get total with highest count")
