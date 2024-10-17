@@ -4,7 +4,8 @@ use std::collections::HashMap;
 use std::process::exit;
 use std::time::Instant;
 
-use database::{clear_totals, get_total_with_highest_count, insert};
+use database::{clear_totals, get_total_with_highest_count, init, insert};
+use rusqlite::Error;
 
 const LIMIT: usize = 1000;
 
@@ -86,10 +87,12 @@ pub(crate) fn numbers_are_unique(numbers: &[usize; 9]) -> bool {
         && numbers[7] != numbers[8]
 }
 
-fn main() {
+fn main() -> Result<(), Error> {
     let start_time: Instant = Instant::now();
 
-    clear_totals().expect("Failed to clear totals");
+    init()?;
+
+    clear_totals()?;
 
     const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
 
@@ -172,4 +175,6 @@ fn main() {
     let end_time: Instant = Instant::now();
 
     println!("Elapsed time: {:?}", end_time - start_time);
+
+    Ok(())
 }

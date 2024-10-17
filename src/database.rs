@@ -1,60 +1,67 @@
 extern crate dotenv;
-extern crate mysql;
+extern crate rusqlite;
 
-use mysql::*;
 use once_cell::sync::Lazy;
-use prelude::Queryable;
+use rusqlite::{params, Connection, Error, OptionalExtension, Row, Transaction};
 use std::collections::HashMap;
 
-static MYSQL_USER: Lazy<String> =
-    Lazy::new(|| dotenv::var("MYSQL_USER").expect("MYSQL_USER not set"));
-static MYSQL_PASSWORD: Lazy<String> =
-    Lazy::new(|| dotenv::var("MYSQL_PASSWORD").expect("MYSQL_PASSWORD not set"));
-static MYSQL_DB: Lazy<String> = Lazy::new(|| dotenv::var("MYSQL_DB").expect("MYSQL_DB not set"));
-static OPTS: Lazy<OptsBuilder> = Lazy::new(|| {
-    OptsBuilder::new()
-        .user(Some(MYSQL_USER.clone()))
-        .pass(Some(MYSQL_PASSWORD.clone()))
-        .db_name(Some(MYSQL_DB.clone()))
-        .ip_or_hostname(Some("localhost"))
-        .tcp_port(3306)
-});
-static POOL: Lazy<Pool> = Lazy::new(|| Pool::new(OPTS.clone()).expect("Unable to create pool"));
+static DB_PATH: Lazy<String> =
+    Lazy::new(|| dotenv::var("SQLITE_DB_PATH").expect("SQLITE_DB_PATH not set"));
 
-pub(crate) fn clear_totals() -> Result<()> {
-    let mut pooled_connection: PooledConn = POOL.get_conn().expect("Failed to get connection");
+pub(crate) fn init() -> Result<(), Error> {
+    let connection: Connection =
+        Connection::open(DB_PATH.clone()).expect("Unable to create SQLite database");
 
-    pooled_connection.exec_drop(r"DELETE FROM totals", ())?;
+    connection.execute(
+        r"CREATE TABLE IF NOT EXISTS totals (
+            id INTEGER PRIMARY KEY,
+            total INTEGER NOT NULL UNIQUE,
+            count INTEGER NOT NULL
+        )",
+        [],
+    )?;
 
     Ok(())
 }
 
-pub(crate) fn insert(totals_and_counts: &HashMap<usize, usize>) -> Result<()> {
-    let mut pooled_connection: PooledConn = POOL.get_conn().expect("Failed to get connection");
+pub(crate) fn clear_totals() -> Result<(), Error> {
+    let connection: Connection =
+        Connection::open(DB_PATH.clone()).expect("Unable to open SQLite database");
 
-    let mut values: Vec<String> = Vec::new();
+    connection.execute(r"DELETE FROM totals", params![])?;
+
+    Ok(())
+}
+
+pub(crate) fn insert(totals_and_counts: &HashMap<usize, usize>) -> Result<(), Error> {
+    let mut connection: Connection =
+        Connection::open(DB_PATH.clone()).expect("Unable to open SQLite database");
+
+    let transaction: Transaction<'_> = connection.transaction()?;
 
     for (&total, &count) in totals_and_counts {
-        values.push(format!("({}, {})", total, count));
+        transaction.execute(
+            r"INSERT INTO totals (total, count) VALUES (?, ?)
+               ON CONFLICT(total) DO UPDATE SET count = count + excluded.count",
+            params![total, count],
+        )?;
     }
 
-    let value_str: String = values.join(", ");
-    let query: String = format!(
-        r"INSERT INTO totals (total, count) VALUES {}
-           ON DUPLICATE KEY UPDATE count = count + VALUES(count)",
-        value_str
-    );
-
-    pooled_connection.query_drop(query)?;
-
+    transaction.commit()?;
     Ok(())
 }
 
-pub(crate) fn get_total_with_highest_count() -> Result<Option<usize>> {
-    let mut pooled_connection: PooledConn = POOL.get_conn().expect("Failed to get connection");
+pub(crate) fn get_total_with_highest_count() -> Result<Option<usize>, Error> {
+    let connection: Connection =
+        Connection::open(DB_PATH.clone()).expect("Unable to open SQLite database");
 
-    let total_with_highest_count: Option<usize> = pooled_connection
-        .exec_first(r"SELECT total FROM totals ORDER BY count DESC LIMIT 1", ())?;
+    let total_with_highest_count: Option<usize> = connection
+        .query_row(
+            r"SELECT total FROM totals ORDER BY count DESC LIMIT 1",
+            params![],
+            |row: &Row<'_>| row.get(0),
+        )
+        .optional()?;
 
     Ok(total_with_highest_count)
 }
