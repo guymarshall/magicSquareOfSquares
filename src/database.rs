@@ -1,7 +1,7 @@
 extern crate dotenv;
 extern crate rusqlite;
 
-use rusqlite::{params, Connection, Error, OptionalExtension, Row, Transaction};
+use rusqlite::{params, Connection, Error, OptionalExtension, Row, Statement, Transaction};
 use std::{collections::HashMap, fs, path::Path};
 
 pub(crate) fn init(connection: &Connection) -> Result<(), Error> {
@@ -27,14 +27,19 @@ pub(crate) fn insert(
     connection: &mut Connection,
     totals_and_counts: &HashMap<usize, usize>,
 ) -> Result<(), Error> {
-    let transaction: Transaction<'_> = connection.transaction()?;
+    let transaction: Transaction = connection.transaction()?;
 
-    for (&total, &count) in totals_and_counts {
-        transaction.execute(
+    {
+        // Introduce a new block to limit the scope of `statement`
+        let mut statement: Statement<'_> = transaction.prepare(
             r"INSERT INTO totals (total, count) VALUES (?, ?)
                ON CONFLICT(total) DO UPDATE SET count = count + excluded.count",
-            params![total, count],
         )?;
+
+        for (&total, &count) in totals_and_counts.iter() {
+            statement.execute(params![total, count])?;
+        }
+        // `statement` goes out of scope and is dropped here
     }
 
     transaction.commit()?;
