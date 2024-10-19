@@ -10,7 +10,7 @@ static DB_PATH: Lazy<String> =
 
 pub(crate) fn init() -> Result<(), Error> {
     let connection: Connection =
-        Connection::open(DB_PATH.clone()).expect("Unable to create SQLite database");
+        Connection::open(DB_PATH.as_str()).expect("Unable to create SQLite database");
 
     connection.execute(
         r"CREATE TABLE IF NOT EXISTS totals (
@@ -26,7 +26,7 @@ pub(crate) fn init() -> Result<(), Error> {
 
 pub(crate) fn clear_totals() -> Result<(), Error> {
     let connection: Connection =
-        Connection::open(DB_PATH.clone()).expect("Unable to open SQLite database");
+        Connection::open(DB_PATH.as_str()).expect("Unable to open SQLite database");
 
     connection.execute(r"DELETE FROM totals", params![])?;
 
@@ -35,7 +35,7 @@ pub(crate) fn clear_totals() -> Result<(), Error> {
 
 pub(crate) fn insert(totals_and_counts: &HashMap<usize, usize>) -> Result<(), Error> {
     let mut connection: Connection =
-        Connection::open(DB_PATH.clone()).expect("Unable to open SQLite database");
+        Connection::open(DB_PATH.as_str()).expect("Unable to open SQLite database");
 
     let transaction: Transaction<'_> = connection.transaction()?;
 
@@ -53,7 +53,7 @@ pub(crate) fn insert(totals_and_counts: &HashMap<usize, usize>) -> Result<(), Er
 
 pub(crate) fn get_total_with_highest_count() -> Result<Option<usize>, Error> {
     let connection: Connection =
-        Connection::open(DB_PATH.clone()).expect("Unable to open SQLite database");
+        Connection::open(DB_PATH.as_str()).expect("Unable to open SQLite database");
 
     let total_with_highest_count: Option<usize> = connection
         .query_row(
