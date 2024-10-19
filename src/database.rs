@@ -1,17 +1,10 @@
 extern crate dotenv;
 extern crate rusqlite;
 
-use once_cell::sync::Lazy;
 use rusqlite::{params, Connection, Error, OptionalExtension, Row, Transaction};
 use std::{collections::HashMap, fs, path::Path};
 
-static DB_PATH: Lazy<String> =
-    Lazy::new(|| dotenv::var("SQLITE_DB_PATH").expect("SQLITE_DB_PATH not set"));
-
-pub(crate) fn init() -> Result<(), Error> {
-    let connection: Connection =
-        Connection::open(DB_PATH.as_str()).expect("Unable to create SQLite database");
-
+pub(crate) fn init(connection: &Connection) -> Result<(), Error> {
     connection.execute(
         r"CREATE TABLE IF NOT EXISTS totals (
             id INTEGER PRIMARY KEY,
@@ -24,19 +17,16 @@ pub(crate) fn init() -> Result<(), Error> {
     Ok(())
 }
 
-pub(crate) fn clear_totals() -> Result<(), Error> {
-    let connection: Connection =
-        Connection::open(DB_PATH.as_str()).expect("Unable to open SQLite database");
-
+pub(crate) fn clear_totals(connection: &Connection) -> Result<(), Error> {
     connection.execute(r"DELETE FROM totals", params![])?;
 
     Ok(())
 }
 
-pub(crate) fn insert(totals_and_counts: &HashMap<usize, usize>) -> Result<(), Error> {
-    let mut connection: Connection =
-        Connection::open(DB_PATH.as_str()).expect("Unable to open SQLite database");
-
+pub(crate) fn insert(
+    connection: &mut Connection,
+    totals_and_counts: &HashMap<usize, usize>,
+) -> Result<(), Error> {
     let transaction: Transaction<'_> = connection.transaction()?;
 
     for (&total, &count) in totals_and_counts {
@@ -51,10 +41,9 @@ pub(crate) fn insert(totals_and_counts: &HashMap<usize, usize>) -> Result<(), Er
     Ok(())
 }
 
-pub(crate) fn get_total_with_highest_count() -> Result<Option<usize>, Error> {
-    let connection: Connection =
-        Connection::open(DB_PATH.as_str()).expect("Unable to open SQLite database");
-
+pub(crate) fn get_total_with_highest_count(
+    connection: &Connection,
+) -> Result<Option<usize>, Error> {
     let total_with_highest_count: Option<usize> = connection
         .query_row(
             r"SELECT total FROM totals ORDER BY count DESC LIMIT 1",
@@ -66,16 +55,13 @@ pub(crate) fn get_total_with_highest_count() -> Result<Option<usize>, Error> {
     Ok(total_with_highest_count)
 }
 
-pub(crate) fn delete_db() -> Result<(), Error> {
-    let connection: Connection =
-        Connection::open(DB_PATH.as_str()).expect("Unable to open SQLite database");
-
+pub(crate) fn delete_db(connection: Connection, db_path: &str) -> Result<(), Error> {
     connection.execute("DROP TABLE IF EXISTS totals", [])?;
 
     drop(connection);
 
-    if Path::new(DB_PATH.as_str()).exists() {
-        fs::remove_file(DB_PATH.as_str()).expect("Unable to delete SQLite file");
+    if Path::new(db_path).exists() {
+        fs::remove_file(db_path).expect("Unable to delete SQLite file");
     }
 
     Ok(())

@@ -5,7 +5,8 @@ use std::process::exit;
 use std::time::Instant;
 
 use database::{clear_totals, delete_db, get_total_with_highest_count, init, insert};
-use rusqlite::Error;
+use dotenv::var;
+use rusqlite::{Connection, Error};
 
 const LIMIT: usize = 1000;
 
@@ -21,7 +22,10 @@ const fn generate_square_numbers<const LIMIT: usize>() -> [usize; LIMIT] {
     numbers
 }
 
-pub(crate) fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> Option<usize> {
+pub(crate) fn get_most_frequent_total(
+    connection: &mut Connection,
+    square_numbers: &[usize; LIMIT],
+) -> Option<usize> {
     const TOTAL_ITERATIONS: usize = LIMIT * LIMIT * LIMIT;
     let mut current_iteration: usize = 0;
 
@@ -41,10 +45,10 @@ pub(crate) fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> Option
                 }
             }
         }
-        insert(&totals_and_counts).expect("Failed to insert totals and counts");
+        insert(connection, &totals_and_counts).expect("Failed to insert totals and counts");
     }
 
-    get_total_with_highest_count().expect("Failed to get total with highest count")
+    get_total_with_highest_count(connection).expect("Failed to get total with highest count")
 }
 
 #[inline(always)]
@@ -90,14 +94,18 @@ pub(crate) fn numbers_are_unique(numbers: &[usize; 9]) -> bool {
 fn main() -> Result<(), Error> {
     let start_time: Instant = Instant::now();
 
-    init()?;
-    clear_totals()?;
+    let db_path: String = var("SQLITE_DB_PATH").expect("SQLITE_DB_PATH not set");
+    let mut connection: Connection = Connection::open(db_path.as_str())?;
+
+    init(&connection)?;
+    clear_totals(&connection)?;
 
     const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
-    let most_frequent_total: usize = get_most_frequent_total(&SQUARE_NUMBERS).unwrap();
+    let most_frequent_total: usize =
+        get_most_frequent_total(&mut connection, &SQUARE_NUMBERS).unwrap();
     println!("The most frequent total is {}", most_frequent_total);
 
-    delete_db()?;
+    delete_db(connection, &db_path)?;
 
     const TOTAL_ITERATIONS: usize = LIMIT * LIMIT * LIMIT;
     let mut current_iteration: usize = 0;
