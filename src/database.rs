@@ -3,7 +3,7 @@ extern crate rusqlite;
 
 use once_cell::sync::Lazy;
 use rusqlite::{params, Connection, Error, OptionalExtension, Row, Transaction};
-use std::collections::HashMap;
+use std::{collections::HashMap, fs, path::Path};
 
 static DB_PATH: Lazy<String> =
     Lazy::new(|| dotenv::var("SQLITE_DB_PATH").expect("SQLITE_DB_PATH not set"));
@@ -64,4 +64,19 @@ pub(crate) fn get_total_with_highest_count() -> Result<Option<usize>, Error> {
         .optional()?;
 
     Ok(total_with_highest_count)
+}
+
+pub(crate) fn delete_db() -> Result<(), Error> {
+    let connection: Connection =
+        Connection::open(DB_PATH.as_str()).expect("Unable to open SQLite database");
+
+    connection.execute("DROP TABLE IF EXISTS totals", [])?;
+
+    drop(connection);
+
+    if Path::new(DB_PATH.as_str()).exists() {
+        fs::remove_file(DB_PATH.as_str()).expect("Unable to delete SQLite file");
+    }
+
+    Ok(())
 }

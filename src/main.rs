@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use std::process::exit;
 use std::time::Instant;
 
-use database::{clear_totals, get_total_with_highest_count, init, insert};
+use database::{clear_totals, delete_db, get_total_with_highest_count, init, insert};
 use rusqlite::Error;
 
 const LIMIT: usize = 1000;
@@ -91,14 +91,13 @@ fn main() -> Result<(), Error> {
     let start_time: Instant = Instant::now();
 
     init()?;
-
     clear_totals()?;
 
     const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
-
     let most_frequent_total: usize = get_most_frequent_total(&SQUARE_NUMBERS).unwrap();
-
     println!("The most frequent total is {}", most_frequent_total);
+
+    delete_db()?;
 
     const TOTAL_ITERATIONS: usize = LIMIT * LIMIT * LIMIT;
     let mut current_iteration: usize = 0;
