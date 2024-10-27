@@ -22,7 +22,7 @@ const fn generate_square_numbers<const LIMIT: usize>() -> [usize; LIMIT] {
     numbers
 }
 
-pub(crate) fn get_most_frequent_total(
+fn get_most_frequent_total(
     connection: &mut Connection,
     square_numbers: &[usize; LIMIT],
 ) -> Option<usize> {
@@ -52,7 +52,7 @@ pub(crate) fn get_most_frequent_total(
 }
 
 #[inline(always)]
-pub(crate) fn numbers_are_unique(numbers: &[usize; 9]) -> bool {
+fn numbers_are_unique(numbers: &[usize; 9]) -> bool {
     numbers[0] != numbers[1]
         && numbers[0] != numbers[2]
         && numbers[0] != numbers[3]
