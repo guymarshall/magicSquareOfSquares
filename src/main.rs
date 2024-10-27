@@ -29,13 +29,12 @@ pub(crate) fn get_most_frequent_total(
     const TOTAL_ITERATIONS: usize = LIMIT * LIMIT * LIMIT;
     let mut current_iteration: usize = 0;
 
+    let mut totals_and_counts: HashMap<usize, usize> = HashMap::with_capacity(LIMIT);
     for first in square_numbers {
-        let mut totals_and_counts: HashMap<usize, usize> = HashMap::new();
         for second in square_numbers {
             for third in square_numbers {
                 let total: usize = first + second + third;
-                let count: &mut usize = totals_and_counts.entry(total).or_insert(0);
-                *count += 1;
+                *totals_and_counts.entry(total).or_insert(0) += 1;
 
                 current_iteration += 1;
                 let progress: f64 = (current_iteration as f64 / TOTAL_ITERATIONS as f64) * 100.0;
@@ -46,6 +45,7 @@ pub(crate) fn get_most_frequent_total(
             }
         }
         insert(connection, &totals_and_counts).expect("Failed to insert totals and counts");
+        totals_and_counts.clear();
     }
 
     get_total_with_highest_count(connection).expect("Failed to get total with highest count")
