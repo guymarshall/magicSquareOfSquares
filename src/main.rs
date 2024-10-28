@@ -80,28 +80,21 @@ fn main() -> Result<(), Error> {
 
     delete_db(connection, &db_path)?;
 
-    const TOTAL_ITERATIONS: usize = LIMIT * LIMIT * LIMIT;
-    let mut current_iteration: usize = 0;
-    let mut triplets_that_make_total: Vec<[usize; 3]> = vec![];
-
-    for first in &SQUARE_NUMBERS {
-        for second in &SQUARE_NUMBERS {
-            for third in &SQUARE_NUMBERS {
-                let total: usize = first + second + third;
-
-                if total == most_frequent_total {
-                    triplets_that_make_total.push([*first, *second, *third]);
-                }
-
-                current_iteration += 1;
-                let progress: f64 = (current_iteration as f64) / (TOTAL_ITERATIONS as f64) * 100.0;
-
-                if current_iteration % (TOTAL_ITERATIONS / 1000) == 0 {
-                    println!("Generating triplets: {:.1}%", progress)
-                }
-            }
-        }
-    }
+    let triplets_that_make_total: Vec<[usize; 3]> = SQUARE_NUMBERS
+        .par_iter()
+        .flat_map(|&first| {
+            SQUARE_NUMBERS.par_iter().flat_map(move |&second| {
+                SQUARE_NUMBERS.par_iter().filter_map(move |&third| {
+                    let total: usize = first + second + third;
+                    if total == most_frequent_total {
+                        Some([first, second, third])
+                    } else {
+                        None
+                    }
+                })
+            })
+        })
+        .collect();
 
     let count: usize = triplets_that_make_total.len();
     for (index, top_row) in triplets_that_make_total.clone().into_iter().enumerate() {
