@@ -27,19 +27,30 @@ fn get_most_frequent_total(
     connection: &mut Connection,
     square_numbers: &[usize; LIMIT],
 ) -> Option<usize> {
-    let mut totals_and_counts: HashMap<usize, usize> = HashMap::with_capacity(LIMIT);
-    for first in square_numbers {
-        for second in square_numbers {
-            for third in square_numbers {
-                *totals_and_counts.entry(first + second + third).or_insert(0) += 1;
-            }
-        }
+    square_numbers.iter().for_each(|first: &usize| {
+        let totals: Vec<usize> = square_numbers
+            .iter()
+            .flat_map(|second: &usize| {
+                square_numbers
+                    .iter()
+                    .map(move |third: &usize| first + second + third)
+            })
+            .collect();
+
+        let mut totals_and_counts: HashMap<usize, usize> = totals.iter().fold(
+            HashMap::new(),
+            |mut map: HashMap<usize, usize>, total: &usize| {
+                *map.entry(*total).or_insert(0) += 1;
+                map
+            },
+        );
         insert(connection, &totals_and_counts).expect("Failed to insert totals and counts");
         totals_and_counts.clear();
 
         let current: f32 = (*first as f32).sqrt();
-        println!("Getting most frequent total: {current} / {LIMIT}");
-    }
+        let percentage_progress: f32 = (current / LIMIT as f32) * 100.0;
+        println!("Getting most frequent total: {percentage_progress}%");
+    });
 
     get_total_with_highest_count(connection).expect("Failed to get total with highest count")
 }
