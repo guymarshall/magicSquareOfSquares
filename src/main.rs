@@ -6,6 +6,7 @@ use std::time::Instant;
 
 use database::{clear_totals, delete_db, get_total_with_highest_count, init, insert};
 use dotenv::var;
+use rayon::prelude::*;
 use rusqlite::{Connection, Error};
 
 const LIMIT: usize = 1000;
@@ -53,42 +54,14 @@ fn get_most_frequent_total(
 
 #[inline(always)]
 fn numbers_are_unique(numbers: &[usize; 9]) -> bool {
-    numbers[0] != numbers[1]
-        && numbers[0] != numbers[2]
-        && numbers[0] != numbers[3]
-        && numbers[0] != numbers[4]
-        && numbers[0] != numbers[5]
-        && numbers[0] != numbers[6]
-        && numbers[0] != numbers[7]
-        && numbers[0] != numbers[8]
-        && numbers[1] != numbers[2]
-        && numbers[1] != numbers[3]
-        && numbers[1] != numbers[4]
-        && numbers[1] != numbers[5]
-        && numbers[1] != numbers[6]
-        && numbers[1] != numbers[7]
-        && numbers[1] != numbers[8]
-        && numbers[2] != numbers[3]
-        && numbers[2] != numbers[4]
-        && numbers[2] != numbers[5]
-        && numbers[2] != numbers[6]
-        && numbers[2] != numbers[7]
-        && numbers[2] != numbers[8]
-        && numbers[3] != numbers[4]
-        && numbers[3] != numbers[5]
-        && numbers[3] != numbers[6]
-        && numbers[3] != numbers[7]
-        && numbers[3] != numbers[8]
-        && numbers[4] != numbers[5]
-        && numbers[4] != numbers[6]
-        && numbers[4] != numbers[7]
-        && numbers[4] != numbers[8]
-        && numbers[5] != numbers[6]
-        && numbers[5] != numbers[7]
-        && numbers[5] != numbers[8]
-        && numbers[6] != numbers[7]
-        && numbers[6] != numbers[8]
-        && numbers[7] != numbers[8]
+    for i in 0..9 {
+        for j in (i + 1)..9 {
+            if numbers[i] == numbers[j] {
+                return false;
+            }
+        }
+    }
+    true
 }
 
 fn main() -> Result<(), Error> {
@@ -132,49 +105,49 @@ fn main() -> Result<(), Error> {
 
     let count: usize = triplets_that_make_total.len();
     for (index, top_row) in triplets_that_make_total.clone().into_iter().enumerate() {
-        for middle_row in &triplets_that_make_total {
-            for bottom_row in &triplets_that_make_total {
-                // don't need to check row sums as they are already correct
+        triplets_that_make_total
+            .par_iter()
+            .for_each(|middle_row: &[usize; 3]| {
+                for bottom_row in &triplets_that_make_total {
+                    // don't need to check row sums as they are already correct
 
-                // columns
-                if top_row[0] + middle_row[0] + bottom_row[0] != most_frequent_total {
-                    continue;
-                }
-                if top_row[1] + middle_row[1] + bottom_row[1] != most_frequent_total {
-                    continue;
-                }
-                if top_row[2] + middle_row[2] + bottom_row[2] != most_frequent_total {
-                    continue;
-                }
+                    // columns
+                    if top_row[0] + middle_row[0] + bottom_row[0] != most_frequent_total {
+                        continue;
+                    }
+                    if top_row[1] + middle_row[1] + bottom_row[1] != most_frequent_total {
+                        continue;
+                    }
+                    if top_row[2] + middle_row[2] + bottom_row[2] != most_frequent_total {
+                        continue;
+                    }
 
-                // diagonals
-                if top_row[0] + middle_row[1] + bottom_row[2] != most_frequent_total {
-                    continue;
-                }
-                if top_row[2] + middle_row[1] + bottom_row[0] != most_frequent_total {
-                    continue;
-                }
+                    // diagonals
+                    if top_row[0] + middle_row[1] + bottom_row[2] != most_frequent_total {
+                        continue;
+                    }
+                    if top_row[2] + middle_row[1] + bottom_row[0] != most_frequent_total {
+                        continue;
+                    }
 
-                let merged_rows: [usize; 9] = [
-                    top_row[0],
-                    top_row[1],
-                    top_row[2],
-                    middle_row[0],
-                    middle_row[1],
-                    middle_row[2],
-                    bottom_row[0],
-                    bottom_row[1],
-                    bottom_row[2],
-                ];
+                    let merged_rows: [usize; 9] = [
+                        top_row[0],
+                        top_row[1],
+                        top_row[2],
+                        middle_row[0],
+                        middle_row[1],
+                        middle_row[2],
+                        bottom_row[0],
+                        bottom_row[1],
+                        bottom_row[2],
+                    ];
 
-                if !numbers_are_unique(&merged_rows) {
-                    continue;
+                    if numbers_are_unique(&merged_rows) {
+                        println!("{:?}", merged_rows);
+                        exit(0);
+                    }
                 }
-
-                println!("{:?}", merged_rows);
-                exit(0);
-            }
-        }
+            });
 
         println!("Checking triples: {} / {}", index + 1, count);
     }
