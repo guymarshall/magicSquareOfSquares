@@ -64,6 +64,37 @@ fn numbers_are_unique(numbers: &[usize; 9]) -> bool {
     true
 }
 
+#[inline(always)]
+fn sums_are_valid(
+    top_row: &[usize; 3],
+    middle_row: &[usize; 3],
+    bottom_row: &[usize; 3],
+    most_frequent_total: usize,
+) -> bool {
+    // don't need to check row sums as they are already correct
+
+    // columns
+    if top_row[0] + middle_row[0] + bottom_row[0] != most_frequent_total {
+        return false;
+    }
+    if top_row[1] + middle_row[1] + bottom_row[1] != most_frequent_total {
+        return false;
+    }
+    if top_row[2] + middle_row[2] + bottom_row[2] != most_frequent_total {
+        return false;
+    }
+
+    // diagonals
+    if top_row[0] + middle_row[1] + bottom_row[2] != most_frequent_total {
+        return false;
+    }
+    if top_row[2] + middle_row[1] + bottom_row[0] != most_frequent_total {
+        return false;
+    }
+
+    true
+}
+
 fn main() -> Result<(), Error> {
     let start_time: Instant = Instant::now();
 
@@ -80,6 +111,7 @@ fn main() -> Result<(), Error> {
 
     delete_db(connection, &db_path)?;
 
+    println!("Calculating triplets_that_make_total");
     let triplets_that_make_total: Vec<[usize; 3]> = SQUARE_NUMBERS
         .par_iter()
         .flat_map(|&first| {
@@ -96,53 +128,32 @@ fn main() -> Result<(), Error> {
         })
         .collect();
 
-    let count: usize = triplets_that_make_total.len();
-    for (index, top_row) in triplets_that_make_total.clone().into_iter().enumerate() {
+    println!("Checking triples");
+    for top_row in triplets_that_make_total.clone().iter() {
         triplets_that_make_total
             .par_iter()
             .for_each(|middle_row: &[usize; 3]| {
                 for bottom_row in &triplets_that_make_total {
-                    // don't need to check row sums as they are already correct
+                    if sums_are_valid(top_row, middle_row, bottom_row, most_frequent_total) {
+                        let merged_rows: [usize; 9] = [
+                            top_row[0],
+                            top_row[1],
+                            top_row[2],
+                            middle_row[0],
+                            middle_row[1],
+                            middle_row[2],
+                            bottom_row[0],
+                            bottom_row[1],
+                            bottom_row[2],
+                        ];
 
-                    // columns
-                    if top_row[0] + middle_row[0] + bottom_row[0] != most_frequent_total {
-                        continue;
-                    }
-                    if top_row[1] + middle_row[1] + bottom_row[1] != most_frequent_total {
-                        continue;
-                    }
-                    if top_row[2] + middle_row[2] + bottom_row[2] != most_frequent_total {
-                        continue;
-                    }
-
-                    // diagonals
-                    if top_row[0] + middle_row[1] + bottom_row[2] != most_frequent_total {
-                        continue;
-                    }
-                    if top_row[2] + middle_row[1] + bottom_row[0] != most_frequent_total {
-                        continue;
-                    }
-
-                    let merged_rows: [usize; 9] = [
-                        top_row[0],
-                        top_row[1],
-                        top_row[2],
-                        middle_row[0],
-                        middle_row[1],
-                        middle_row[2],
-                        bottom_row[0],
-                        bottom_row[1],
-                        bottom_row[2],
-                    ];
-
-                    if numbers_are_unique(&merged_rows) {
-                        println!("{:?}", merged_rows);
-                        exit(0);
+                        if numbers_are_unique(&merged_rows) {
+                            println!("{:?}", merged_rows);
+                            exit(0);
+                        }
                     }
                 }
             });
-
-        println!("Checking triples: {} / {}", index + 1, count);
     }
 
     let end_time: Instant = Instant::now();
