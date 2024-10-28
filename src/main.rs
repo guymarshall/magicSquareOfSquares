@@ -29,27 +29,39 @@ fn get_most_frequent_total(
 ) -> Option<usize> {
     square_numbers.iter().for_each(|first: &usize| {
         let totals: Vec<usize> = square_numbers
-            .iter()
+            .par_iter()
             .flat_map(|second: &usize| {
                 square_numbers
-                    .iter()
+                    .par_iter()
                     .map(move |third: &usize| first + second + third)
+                    .collect::<Vec<_>>()
             })
             .collect();
 
-        let mut totals_and_counts: HashMap<usize, usize> = totals.iter().fold(
-            HashMap::new(),
-            |mut map: HashMap<usize, usize>, total: &usize| {
-                *map.entry(*total).or_insert(0) += 1;
-                map
-            },
-        );
+        let totals_and_counts: HashMap<usize, usize> = totals
+            .par_iter()
+            .fold(
+                HashMap::new,
+                |mut map: HashMap<usize, usize>, total: &usize| {
+                    *map.entry(*total).or_insert(0) += 1;
+                    map
+                },
+            )
+            .reduce(
+                HashMap::new,
+                |mut map1: HashMap<usize, usize>, map2: HashMap<usize, usize>| {
+                    map2.iter().for_each(|(key, count)| {
+                        *map1.entry(*key).or_insert(0) += count;
+                    });
+                    map1
+                },
+            );
+
         insert(connection, &totals_and_counts).expect("Failed to insert totals and counts");
-        totals_and_counts.clear();
 
         let current: f32 = (*first as f32).sqrt();
         let percentage_progress: f32 = (current / LIMIT as f32) * 100.0;
-        println!("Getting most frequent total: {percentage_progress}%");
+        println!("Getting most frequent total: {:.1}%", percentage_progress);
     });
 
     get_total_with_highest_count(connection).expect("Failed to get total with highest count")
