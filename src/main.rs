@@ -7,7 +7,7 @@ use std::time::Instant;
 use database::{clear_totals, delete_db, get_total_with_highest_count, init, insert};
 use dotenv::var;
 use rayon::prelude::*;
-use rusqlite::{Connection, Error};
+use rusqlite::Connection;
 
 const LIMIT: usize = 1000;
 
@@ -57,14 +57,14 @@ fn get_most_frequent_total(
                 },
             );
 
-        insert(connection, &totals_and_counts).expect("Failed to insert totals and counts");
+        insert(connection, &totals_and_counts).unwrap();
 
         let current: f32 = (*first as f32).sqrt();
         let percentage_progress: f32 = (current / LIMIT as f32) * 100.0;
         println!("Getting most frequent total: {:.1}%", percentage_progress);
     });
 
-    get_total_with_highest_count(connection).expect("Failed to get total with highest count")
+    get_total_with_highest_count(connection).unwrap()
 }
 
 #[inline(always)]
@@ -110,21 +110,21 @@ fn sums_are_valid(
     true
 }
 
-fn main() -> Result<(), Error> {
+fn main() {
     let start_time: Instant = Instant::now();
 
     let db_path: String = var("SQLITE_DB_PATH").expect("SQLITE_DB_PATH not set");
-    let mut connection: Connection = Connection::open(db_path.as_str())?;
+    let mut connection: Connection = Connection::open(db_path.as_str()).unwrap();
 
-    init(&connection)?;
-    clear_totals(&connection)?;
+    init(&connection).unwrap();
+    clear_totals(&connection).unwrap();
 
     const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
     let most_frequent_total: usize =
         get_most_frequent_total(&mut connection, &SQUARE_NUMBERS).unwrap();
     println!("The most frequent total is {}", most_frequent_total);
 
-    delete_db(connection, &db_path)?;
+    delete_db(connection, &db_path).unwrap();
 
     println!("Calculating triplets_that_make_total");
     let triplets_that_make_total: Vec<[usize; 3]> = SQUARE_NUMBERS
@@ -174,6 +174,4 @@ fn main() -> Result<(), Error> {
     let end_time: Instant = Instant::now();
 
     println!("Elapsed time: {:?}", end_time - start_time);
-
-    Ok(())
 }
