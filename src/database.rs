@@ -4,6 +4,7 @@ extern crate rusqlite;
 use rusqlite::{params, Connection, Error, OptionalExtension, Row, Statement, Transaction};
 use std::{collections::HashMap, fs, path::Path};
 
+#[inline(always)]
 pub(crate) fn init(connection: &Connection) -> Result<(), Error> {
     connection.execute(
         r"CREATE TABLE IF NOT EXISTS totals (
@@ -17,12 +18,14 @@ pub(crate) fn init(connection: &Connection) -> Result<(), Error> {
     Ok(())
 }
 
+#[inline(always)]
 pub(crate) fn clear_totals(connection: &Connection) -> Result<(), Error> {
     connection.execute(r"DELETE FROM totals", params![])?;
 
     Ok(())
 }
 
+#[inline(always)]
 pub(crate) fn insert(
     connection: &mut Connection,
     totals_and_counts: &HashMap<usize, usize>,
@@ -46,6 +49,7 @@ pub(crate) fn insert(
     Ok(())
 }
 
+#[inline(always)]
 pub(crate) fn get_total_with_highest_count(
     connection: &Connection,
 ) -> Result<Option<usize>, Error> {
@@ -60,6 +64,7 @@ pub(crate) fn get_total_with_highest_count(
     Ok(total_with_highest_count)
 }
 
+#[inline(always)]
 pub(crate) fn delete_db(connection: Connection, db_path: &str) -> Result<(), Error> {
     connection.execute("DROP TABLE IF EXISTS totals", [])?;
 
