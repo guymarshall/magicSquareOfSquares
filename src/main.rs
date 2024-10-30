@@ -1,8 +1,8 @@
 mod database;
 
-use std::collections::HashMap;
 use std::process::exit;
 use std::time::Instant;
+use std::{collections::HashMap, io::Write};
 
 use database::{clear_totals, delete_db, get_total_with_highest_count, init, insert};
 use dotenv::var;
@@ -61,7 +61,8 @@ fn get_most_frequent_total(
 
         let current: f32 = (*first as f32).sqrt();
         let percentage_progress: f32 = (current / LIMIT as f32) * 100.0;
-        println!("Getting most frequent total: {:.1}%", percentage_progress);
+        print!("\rGetting most frequent total: {:.1}%", percentage_progress);
+        std::io::stdout().flush().unwrap();
     });
 
     get_total_with_highest_count(connection).unwrap()
