@@ -1,11 +1,11 @@
-extern crate dotenv;
 extern crate rusqlite;
 
 use rusqlite::{params, Connection, Error, OptionalExtension, Row, Statement, Transaction};
 use std::{collections::HashMap, fs, path::Path};
 
 #[inline(always)]
-pub(crate) fn init(connection: &Connection) -> Result<(), Error> {
+pub(crate) fn init(filename: &str) -> Result<(), Error> {
+    let connection: Connection = Connection::open(filename)?;
     connection.execute(
         r"CREATE TABLE IF NOT EXISTS totals (
             id INTEGER PRIMARY KEY,
@@ -19,7 +19,8 @@ pub(crate) fn init(connection: &Connection) -> Result<(), Error> {
 }
 
 #[inline(always)]
-pub(crate) fn clear_totals(connection: &Connection) -> Result<(), Error> {
+pub(crate) fn clear_totals(filename: &str) -> Result<(), Error> {
+    let connection: Connection = Connection::open(filename)?;
     connection.execute(r"DELETE FROM totals", params![])?;
 
     Ok(())
@@ -27,9 +28,10 @@ pub(crate) fn clear_totals(connection: &Connection) -> Result<(), Error> {
 
 #[inline(always)]
 pub(crate) fn insert(
-    connection: &mut Connection,
+    filename: &str,
     totals_and_counts: &HashMap<usize, usize>,
 ) -> Result<(), Error> {
+    let mut connection: Connection = Connection::open(filename)?;
     let transaction: Transaction = connection.transaction()?;
 
     {
@@ -50,9 +52,8 @@ pub(crate) fn insert(
 }
 
 #[inline(always)]
-pub(crate) fn get_total_with_highest_count(
-    connection: &Connection,
-) -> Result<Option<usize>, Error> {
+pub(crate) fn get_total_with_highest_count(filename: &str) -> Result<Option<usize>, Error> {
+    let connection: Connection = Connection::open(filename)?;
     let total_with_highest_count: Option<usize> = connection
         .query_row(
             r"SELECT total FROM totals ORDER BY count DESC LIMIT 1",
@@ -65,13 +66,14 @@ pub(crate) fn get_total_with_highest_count(
 }
 
 #[inline(always)]
-pub(crate) fn delete_db(connection: Connection, db_path: &str) -> Result<(), Error> {
+pub(crate) fn delete_db(filename: &str) -> Result<(), Error> {
+    let connection: Connection = Connection::open(filename)?;
     connection.execute("DROP TABLE IF EXISTS totals", [])?;
 
     drop(connection);
 
-    if Path::new(db_path).exists() {
-        fs::remove_file(db_path).expect("Unable to delete SQLite file");
+    if Path::new(filename).exists() {
+        fs::remove_file(filename).expect("Unable to delete SQLite file");
     }
 
     Ok(())

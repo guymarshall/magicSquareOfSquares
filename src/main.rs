@@ -5,9 +5,7 @@ use std::time::Instant;
 use std::{collections::HashMap, io::Write};
 
 use database::{clear_totals, delete_db, get_total_with_highest_count, init, insert};
-use dotenv::var;
 use rayon::prelude::*;
-use rusqlite::Connection;
 
 const LIMIT: usize = 1000;
 
@@ -23,10 +21,7 @@ const fn generate_square_numbers<const LIMIT: usize>() -> [usize; LIMIT] {
     numbers
 }
 
-fn get_most_frequent_total(
-    connection: &mut Connection,
-    square_numbers: &[usize; LIMIT],
-) -> Option<usize> {
+fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> Option<usize> {
     let mut totals_and_counts: HashMap<usize, usize> = HashMap::with_capacity(LIMIT);
     for first in square_numbers {
         for second in square_numbers {
@@ -34,7 +29,7 @@ fn get_most_frequent_total(
                 *totals_and_counts.entry(first + second + third).or_insert(0) += 1;
             }
         }
-        insert(connection, &totals_and_counts).unwrap();
+        insert("db.sqlite", &totals_and_counts).unwrap();
         totals_and_counts.clear();
 
         let current: f32 = (*first as f32).sqrt();
@@ -43,7 +38,7 @@ fn get_most_frequent_total(
         std::io::stdout().flush().unwrap();
     }
 
-    get_total_with_highest_count(connection).unwrap()
+    get_total_with_highest_count("db.sqlite").unwrap()
 }
 
 #[inline(always)]
@@ -92,18 +87,14 @@ fn sums_are_valid(
 fn main() {
     let start_time: Instant = Instant::now();
 
-    let db_path: String = var("SQLITE_DB_PATH").expect("SQLITE_DB_PATH not set");
-    let mut connection: Connection = Connection::open(db_path.as_str()).unwrap();
-
-    init(&connection).unwrap();
-    clear_totals(&connection).unwrap();
+    init("db.sqlite").unwrap();
+    clear_totals("db.sqlite").unwrap();
 
     const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
-    let most_frequent_total: usize =
-        get_most_frequent_total(&mut connection, &SQUARE_NUMBERS).unwrap();
+    let most_frequent_total: usize = get_most_frequent_total(&SQUARE_NUMBERS).unwrap();
     println!("The most frequent total is {}", most_frequent_total);
 
-    delete_db(connection, &db_path).unwrap();
+    delete_db("db.sqlite").unwrap();
 
     println!("Calculating triplets_that_make_total");
     let triplets_that_make_total: Vec<[usize; 3]> = SQUARE_NUMBERS
