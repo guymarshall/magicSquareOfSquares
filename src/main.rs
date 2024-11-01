@@ -38,6 +38,8 @@ fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> Option<usize> {
         std::io::stdout().flush().unwrap();
     }
 
+    println!();
+
     get_total_with_highest_count("db.sqlite").unwrap()
 }
 
