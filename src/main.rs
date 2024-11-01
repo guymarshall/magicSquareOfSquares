@@ -1,5 +1,6 @@
 mod database;
 
+use itertools::Itertools;
 use std::process::exit;
 use std::time::Instant;
 use std::{collections::HashMap, io::Write};
@@ -23,19 +24,29 @@ const fn generate_square_numbers<const LIMIT: usize>() -> [usize; LIMIT] {
 
 fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> Option<usize> {
     let mut totals_and_counts: HashMap<usize, usize> = HashMap::with_capacity(LIMIT);
-    for first in square_numbers {
-        for second in square_numbers {
-            for third in square_numbers {
-                *totals_and_counts.entry(first + second + third).or_insert(0) += 1;
-            }
-        }
-        insert("db.sqlite", &totals_and_counts).unwrap();
-        totals_and_counts.clear();
 
-        let current: f32 = (*first as f32).sqrt();
-        let percentage_progress: f32 = (current / LIMIT as f32) * 100.0;
+    for (i, first) in square_numbers.iter().enumerate() {
+        square_numbers
+            .iter()
+            .combinations(2)
+            .for_each(|permutation: Vec<&usize>| {
+                *totals_and_counts
+                    .entry(first + permutation[0] + permutation[1])
+                    .or_insert(0) += 1;
+            });
+
+        if i % 100 == 0 {
+            insert("db.sqlite", &totals_and_counts).unwrap();
+            totals_and_counts.clear();
+        }
+
+        let percentage_progress: f32 = ((i + 1) as f32 / square_numbers.len() as f32) * 100.0;
         print!("\rGetting most frequent total: {:.1}%", percentage_progress);
         std::io::stdout().flush().unwrap();
+    }
+
+    if !totals_and_counts.is_empty() {
+        insert("db.sqlite", &totals_and_counts).unwrap();
     }
 
     println!();
