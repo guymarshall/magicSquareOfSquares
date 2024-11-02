@@ -37,7 +37,7 @@ fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> Option<usize> {
                     .or_insert(0) += 1;
             });
 
-        if i % 100 == 0 {
+        if i % 1000 == 0 {
             insert("db.sqlite", &totals_and_counts).unwrap();
             totals_and_counts.clear();
         }
