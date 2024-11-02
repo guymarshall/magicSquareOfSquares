@@ -25,7 +25,7 @@ const fn generate_square_numbers<const LIMIT: usize>() -> [usize; LIMIT] {
 }
 
 fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> Option<usize> {
-    let mut totals_and_counts: HashMap<usize, usize> = HashMap::with_capacity(LIMIT);
+    let mut totals_and_counts: HashMap<usize, usize> = HashMap::new();
 
     for (i, first) in square_numbers.iter().enumerate() {
         square_numbers
