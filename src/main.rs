@@ -1,6 +1,8 @@
 mod database;
+mod square;
 
 use itertools::Itertools;
+use square::{numbers_are_unique, sums_are_valid};
 use std::process::exit;
 use std::time::Instant;
 use std::{collections::HashMap, io::Write};
@@ -52,49 +54,6 @@ fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> Option<usize> {
     println!();
 
     get_total_with_highest_count("db.sqlite").unwrap()
-}
-
-#[inline(always)]
-fn numbers_are_unique(numbers: &[usize; 9]) -> bool {
-    for i in 0..9 {
-        for j in (i + 1)..9 {
-            if numbers[i] == numbers[j] {
-                return false;
-            }
-        }
-    }
-    true
-}
-
-#[inline(always)]
-fn sums_are_valid(
-    top_row: &[usize; 3],
-    middle_row: &[usize; 3],
-    bottom_row: &[usize; 3],
-    most_frequent_total: usize,
-) -> bool {
-    // don't need to check row sums as they are already correct
-
-    // columns
-    if top_row[0] + middle_row[0] + bottom_row[0] != most_frequent_total {
-        return false;
-    }
-    if top_row[1] + middle_row[1] + bottom_row[1] != most_frequent_total {
-        return false;
-    }
-    if top_row[2] + middle_row[2] + bottom_row[2] != most_frequent_total {
-        return false;
-    }
-
-    // diagonals
-    if top_row[0] + middle_row[1] + bottom_row[2] != most_frequent_total {
-        return false;
-    }
-    if top_row[2] + middle_row[1] + bottom_row[0] != most_frequent_total {
-        return false;
-    }
-
-    true
 }
 
 fn main() {
