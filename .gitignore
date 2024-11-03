@@ -3,3 +3,5 @@
 .vscode/
 .vs/
 *.iml
+*.sqlite
+*.sqlite-journal
