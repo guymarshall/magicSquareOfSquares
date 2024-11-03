@@ -3,6 +3,3 @@
 .vscode/
 .vs/
 *.iml
-.env
-*.sqlite
-*.sqlite-journal
