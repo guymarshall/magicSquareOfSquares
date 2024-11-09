@@ -86,7 +86,7 @@ fn main() {
         .collect();
 
     println!("Checking triples");
-    for top_row in triplets_that_make_total.clone().iter() {
+    for top_row in triplets_that_make_total.iter() {
         triplets_that_make_total
             .par_iter()
             .for_each(|middle_row: &[usize; 3]| {
