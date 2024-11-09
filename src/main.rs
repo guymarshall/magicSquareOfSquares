@@ -1,13 +1,13 @@
-mod database;
+mod allocator;
 mod square;
 
+use allocator::preallocate_hashmap;
 use itertools::Itertools;
 use square::{numbers_are_unique, sums_are_valid};
 use std::process::exit;
 use std::time::Instant;
 use std::{collections::HashMap, io::Write};
 
-use database::{clear_totals, delete_db, get_total_with_highest_count, init, insert};
 use rayon::prelude::*;
 
 const LIMIT: usize = 1000;
@@ -24,8 +24,8 @@ const fn generate_square_numbers<const LIMIT: usize>() -> [usize; LIMIT] {
     numbers
 }
 
-fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> Option<usize> {
-    let mut totals_and_counts: HashMap<usize, usize> = HashMap::new();
+fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> usize {
+    let (mut totals_and_counts, chunk_size): (HashMap<usize, usize>, usize) = preallocate_hashmap();
 
     for (i, first) in square_numbers.iter().enumerate() {
         square_numbers
@@ -37,9 +37,19 @@ fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> Option<usize> {
                     .or_insert(0) += 1;
             });
 
-        if i % 1000 == 0 {
-            insert("db.sqlite", &totals_and_counts).unwrap();
+        if i % chunk_size == 0 && i != LIMIT - 1 {
+            let top_10: HashMap<usize, usize> = totals_and_counts
+                .iter()
+                .map(|(total, count): (&usize, &usize)| (*total, *count))
+                .sorted_by(|a: &(usize, usize), b: &(usize, usize)| b.1.cmp(&a.1))
+                .take(10)
+                .collect();
+
             totals_and_counts.clear();
+
+            top_10.iter().for_each(|(total, count): (&usize, &usize)| {
+                totals_and_counts.insert(*total, *count);
+            });
         }
 
         let percentage_progress: f32 = ((i + 1) as f32 / square_numbers.len() as f32) * 100.0;
@@ -47,26 +57,21 @@ fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> Option<usize> {
         std::io::stdout().flush().unwrap();
     }
 
-    if !totals_and_counts.is_empty() {
-        insert("db.sqlite", &totals_and_counts).unwrap();
-    }
-
     println!();
 
-    get_total_with_highest_count("db.sqlite").unwrap()
+    *totals_and_counts
+        .iter()
+        .max_by_key(|&(_, count): &(&usize, &usize)| count)
+        .unwrap()
+        .0
 }
 
 fn main() {
     let start_time: Instant = Instant::now();
 
-    init("db.sqlite").unwrap();
-    clear_totals("db.sqlite").unwrap();
-
     const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
-    let most_frequent_total: usize = get_most_frequent_total(&SQUARE_NUMBERS).unwrap();
+    let most_frequent_total: usize = get_most_frequent_total(&SQUARE_NUMBERS);
     println!("The most frequent total is {}", most_frequent_total);
-
-    delete_db("db.sqlite").unwrap();
 
     println!("Calculating triplets_that_make_total");
     let triplets_that_make_total: Vec<[usize; 3]> = SQUARE_NUMBERS
