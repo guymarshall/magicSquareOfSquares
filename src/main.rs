@@ -60,7 +60,7 @@ fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> usize {
     println!();
 
     *totals_and_counts
-        .iter()
+        .par_iter()
         .max_by_key(|&(_, count): &(&usize, &usize)| count)
         .unwrap()
         .0
