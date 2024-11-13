@@ -28,14 +28,15 @@ fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> usize {
     let (mut totals_and_counts, chunk_size): (HashMap<usize, usize>, usize) = preallocate_hashmap();
 
     for (i, first) in square_numbers.iter().enumerate() {
-        square_numbers
+        let totals: Vec<usize> = square_numbers
             .iter()
             .combinations(2)
-            .for_each(|permutation: Vec<&usize>| {
-                *totals_and_counts
-                    .entry(first + permutation[0] + permutation[1])
-                    .or_insert(0) += 1;
-            });
+            .map(|combination: Vec<&usize>| first + combination[0] + combination[1])
+            .collect();
+
+        totals.into_iter().for_each(|total: usize| {
+            *totals_and_counts.entry(total).or_insert(0) += 1;
+        });
 
         if i % chunk_size == 0 && i != LIMIT - 1 {
             let top_10: HashMap<usize, usize> = totals_and_counts
