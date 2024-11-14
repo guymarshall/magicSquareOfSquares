@@ -47,11 +47,13 @@ fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> usize {
         });
 
         if i % chunk_size == 0 && i != LIMIT - 1 {
-            let mut sorted_vec: Vec<(&usize, &usize)> = totals_and_counts.par_iter().collect();
+            let mut sorted_totals_and_counts: Vec<(&usize, &usize)> =
+                totals_and_counts.par_iter().collect();
 
-            sorted_vec.sort_by(|a: &(&usize, &usize), b: &(&usize, &usize)| b.1.cmp(a.1));
+            sorted_totals_and_counts
+                .sort_by(|a: &(&usize, &usize), b: &(&usize, &usize)| b.1.cmp(a.1));
 
-            let top_10: HashMap<usize, usize> = sorted_vec
+            let top_10: HashMap<usize, usize> = sorted_totals_and_counts
                 .iter()
                 .take(10)
                 .map(|(total, count): &(&usize, &usize)| (**total, **count))
