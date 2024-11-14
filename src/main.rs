@@ -1,11 +1,10 @@
-mod allocator;
 mod square;
 
-use allocator::preallocate_hashmap;
 use square::{numbers_are_unique, sums_are_valid};
 use std::process::exit;
 use std::time::Instant;
 use std::{collections::HashMap, io::Write};
+use sysinfo::System;
 
 use rayon::prelude::*;
 
@@ -37,7 +36,16 @@ fn generate_totals(square_numbers: &[usize], first: &usize) -> Vec<usize> {
 }
 
 fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> usize {
-    let (mut totals_and_counts, chunk_size): (HashMap<usize, usize>, usize) = preallocate_hashmap();
+    let mut system: System = System::new_all();
+    system.refresh_memory();
+
+    let total_memory_bytes: u64 = system.total_memory();
+    let memory_budget: usize = (total_memory_bytes / 5) as usize;
+
+    let entry_size: usize = std::mem::size_of::<(usize, usize)>();
+    let chunk_size: usize = memory_budget / entry_size;
+
+    let mut totals_and_counts: HashMap<usize, usize> = HashMap::with_capacity(chunk_size);
 
     for (i, first) in square_numbers.iter().enumerate() {
         let totals: Vec<usize> = generate_totals(square_numbers, first);
