@@ -2,7 +2,6 @@ mod allocator;
 mod square;
 
 use allocator::preallocate_hashmap;
-use itertools::Itertools;
 use square::{numbers_are_unique, sums_are_valid};
 use std::process::exit;
 use std::time::Instant;
@@ -24,26 +23,38 @@ const fn generate_square_numbers<const LIMIT: usize>() -> [usize; LIMIT] {
     numbers
 }
 
+fn generate_totals(square_numbers: &[usize], first: &usize) -> Vec<usize> {
+    let mut totals: Vec<usize> = Vec::new();
+
+    for i in 0..LIMIT {
+        for j in i + 1..LIMIT {
+            let sum: usize = first + square_numbers[i] + square_numbers[j];
+            totals.push(sum);
+        }
+    }
+
+    totals
+}
+
 fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> usize {
     let (mut totals_and_counts, chunk_size): (HashMap<usize, usize>, usize) = preallocate_hashmap();
 
     for (i, first) in square_numbers.iter().enumerate() {
-        let totals: Vec<usize> = square_numbers
-            .iter()
-            .combinations(2)
-            .map(|combination: Vec<&usize>| first + combination[0] + combination[1])
-            .collect();
+        let totals: Vec<usize> = generate_totals(square_numbers, first);
 
         totals.into_iter().for_each(|total: usize| {
             *totals_and_counts.entry(total).or_insert(0) += 1;
         });
 
         if i % chunk_size == 0 && i != LIMIT - 1 {
-            let top_10: HashMap<usize, usize> = totals_and_counts
+            let mut sorted_vec: Vec<(&usize, &usize)> = totals_and_counts.par_iter().collect();
+
+            sorted_vec.sort_by(|a: &(&usize, &usize), b: &(&usize, &usize)| b.1.cmp(a.1));
+
+            let top_10: HashMap<usize, usize> = sorted_vec
                 .iter()
-                .map(|(total, count): (&usize, &usize)| (*total, *count))
-                .sorted_by(|a: &(usize, usize), b: &(usize, usize)| b.1.cmp(&a.1))
                 .take(10)
+                .map(|(total, count): &(&usize, &usize)| (**total, **count))
                 .collect();
 
             totals_and_counts.clear();
