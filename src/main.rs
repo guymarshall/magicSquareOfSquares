@@ -88,6 +88,8 @@ fn main() {
         .0;
     println!("The most frequent total is {}", most_frequent_total);
 
+    drop(totals_and_counts);
+
     println!("Calculating triplets_that_make_total");
     let triplets_that_make_total: Vec<[usize; 3]> = SQUARE_NUMBERS
         .par_iter()
