@@ -1,6 +1,6 @@
 mod square;
 
-use square::{numbers_are_unique, sums_are_valid};
+use square::sums_are_valid;
 use std::process::exit;
 use std::time::Instant;
 use std::{collections::HashMap, io::Write};
@@ -22,20 +22,11 @@ const fn generate_square_numbers<const LIMIT: usize>() -> [usize; LIMIT] {
     numbers
 }
 
-fn generate_totals(square_numbers: &[usize], first: &usize) -> Vec<usize> {
-    let mut totals: Vec<usize> = Vec::new();
+fn main() {
+    let start_time: Instant = Instant::now();
 
-    for i in 0..LIMIT {
-        for j in i + 1..LIMIT {
-            let sum: usize = first + square_numbers[i] + square_numbers[j];
-            totals.push(sum);
-        }
-    }
+    const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
 
-    totals
-}
-
-fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> usize {
     let mut system: System = System::new_all();
     system.refresh_memory();
 
@@ -47,8 +38,17 @@ fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> usize {
 
     let mut totals_and_counts: HashMap<usize, usize> = HashMap::with_capacity(chunk_size);
 
-    for (i, first) in square_numbers.iter().enumerate() {
-        let totals: Vec<usize> = generate_totals(square_numbers, first);
+    for (i, first) in SQUARE_NUMBERS.iter().enumerate() {
+        let mut totals: Vec<usize> = Vec::new();
+
+        SQUARE_NUMBERS
+            .iter()
+            .enumerate()
+            .for_each(|(i, second): (usize, &usize)| {
+                SQUARE_NUMBERS.iter().skip(i + 1).for_each(|third: &usize| {
+                    totals.push(first + second + third);
+                });
+            });
 
         totals.into_iter().for_each(|total: usize| {
             *totals_and_counts.entry(total).or_insert(0) += 1;
@@ -74,25 +74,18 @@ fn get_most_frequent_total(square_numbers: &[usize; LIMIT]) -> usize {
             });
         }
 
-        let percentage_progress: f32 = ((i + 1) as f32 / square_numbers.len() as f32) * 100.0;
+        let percentage_progress: f32 = ((i + 1) as f32 / SQUARE_NUMBERS.len() as f32) * 100.0;
         print!("\rGetting most frequent total: {:.1}%", percentage_progress);
         std::io::stdout().flush().unwrap();
     }
 
     println!();
 
-    *totals_and_counts
+    let most_frequent_total: usize = *totals_and_counts
         .par_iter()
         .max_by_key(|&(_, count): &(&usize, &usize)| count)
         .unwrap()
-        .0
-}
-
-fn main() {
-    let start_time: Instant = Instant::now();
-
-    const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
-    let most_frequent_total: usize = get_most_frequent_total(&SQUARE_NUMBERS);
+        .0;
     println!("The most frequent total is {}", most_frequent_total);
 
     println!("Calculating triplets_that_make_total");
@@ -131,10 +124,16 @@ fn main() {
                             bottom_row[2],
                         ];
 
-                        if numbers_are_unique(&merged_rows) {
-                            println!("{:?}", merged_rows);
-                            exit(0);
+                        for i in 0..9 {
+                            for j in (i + 1)..9 {
+                                if merged_rows[i] == merged_rows[j] {
+                                    continue;
+                                }
+                            }
                         }
+
+                        println!("{:?}", merged_rows);
+                        exit(0);
                     }
                 }
             });
