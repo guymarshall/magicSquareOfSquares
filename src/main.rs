@@ -39,16 +39,16 @@ fn main() {
     let mut totals_and_counts: HashMap<usize, usize> = HashMap::with_capacity(chunk_size);
 
     for (i, first) in SQUARE_NUMBERS.iter().enumerate() {
-        let mut totals: Vec<usize> = Vec::new();
-
-        SQUARE_NUMBERS
-            .iter()
+        let totals: Vec<usize> = SQUARE_NUMBERS
+            .par_iter()
             .enumerate()
-            .for_each(|(i, second): (usize, &usize)| {
-                SQUARE_NUMBERS.iter().skip(i + 1).for_each(|third: &usize| {
-                    totals.push(first + second + third);
-                });
-            });
+            .flat_map(|(i, second): (usize, &usize)| {
+                SQUARE_NUMBERS
+                    .par_iter()
+                    .skip(i + 1)
+                    .map(move |third: &usize| first + second + third)
+            })
+            .collect();
 
         totals.into_iter().for_each(|total: usize| {
             *totals_and_counts.entry(total).or_insert(0) += 1;
@@ -62,7 +62,7 @@ fn main() {
                 .sort_by(|a: &(&usize, &usize), b: &(&usize, &usize)| b.1.cmp(a.1));
 
             let top_10: HashMap<usize, usize> = sorted_totals_and_counts
-                .iter()
+                .par_iter()
                 .take(10)
                 .map(|(total, count): &(&usize, &usize)| (**total, **count))
                 .collect();
