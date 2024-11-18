@@ -1,12 +1,15 @@
+mod combiner;
 mod square;
 
+use combiner::parallel_merge_all;
 use square::sums_are_valid;
+use std::collections::HashMap;
 use std::process::exit;
+use std::sync::{Mutex, MutexGuard};
 use std::time::Instant;
-use std::{collections::HashMap, io::Write};
 use sysinfo::System;
 
-use rayon::prelude::*;
+use rayon::{current_num_threads, prelude::*};
 
 const LIMIT: usize = 1000;
 
@@ -34,61 +37,70 @@ fn main() {
     let memory_budget: usize = (total_memory_bytes / 5) as usize;
 
     let entry_size: usize = std::mem::size_of::<(usize, usize)>();
-    let chunk_size: usize = memory_budget / entry_size;
+    let chunk_size_total: usize = memory_budget / entry_size;
+    let chunk_size: usize = chunk_size_total / current_num_threads();
 
-    let mut totals_and_counts: HashMap<usize, usize> = HashMap::with_capacity(chunk_size);
-
-    for (i, first) in SQUARE_NUMBERS.iter().enumerate() {
-        let totals: Vec<usize> = SQUARE_NUMBERS
-            .par_iter()
-            .enumerate()
-            .flat_map(|(i, second): (usize, &usize)| {
-                SQUARE_NUMBERS
-                    .par_iter()
-                    .skip(i + 1)
-                    .map(move |third: &usize| first + second + third)
-            })
+    let totals_and_counts_per_thread: Vec<Mutex<HashMap<usize, usize>>> =
+        (0..current_num_threads())
+            .map(|_| Mutex::new(HashMap::new()))
             .collect();
 
-        totals.into_iter().for_each(|total: usize| {
-            *totals_and_counts.entry(total).or_insert(0) += 1;
-        });
-
-        if i % chunk_size == 0 && i != LIMIT - 1 {
-            let mut sorted_totals_and_counts: Vec<(&usize, &usize)> =
-                totals_and_counts.par_iter().collect();
-
-            sorted_totals_and_counts
-                .sort_by(|a: &(&usize, &usize), b: &(&usize, &usize)| b.1.cmp(a.1));
-
-            let top_10: HashMap<usize, usize> = sorted_totals_and_counts
+    println!("Getting most frequent total...");
+    SQUARE_NUMBERS
+        .par_iter()
+        .enumerate()
+        .for_each(|(i, first): (usize, &usize)| {
+            let totals: Vec<usize> = SQUARE_NUMBERS
                 .par_iter()
-                .take(10)
-                .map(|(total, count): &(&usize, &usize)| (**total, **count))
+                .enumerate()
+                .flat_map(|(j, second): (usize, &usize)| {
+                    SQUARE_NUMBERS
+                        .par_iter()
+                        .skip(j + 1)
+                        .map(move |third: &usize| first + second + third)
+                })
                 .collect();
 
-            totals_and_counts.clear();
+            let thread_id: usize = rayon::current_thread_index().unwrap();
+            let mut thread_totals_and_counts: MutexGuard<'_, HashMap<usize, usize>> =
+                totals_and_counts_per_thread[thread_id]
+                    .lock()
+                    .expect("Failed to lock mutex");
 
-            top_10.iter().for_each(|(total, count): (&usize, &usize)| {
-                totals_and_counts.insert(*total, *count);
+            totals.into_iter().for_each(|total: usize| {
+                *thread_totals_and_counts.entry(total).or_insert(0) += 1;
             });
-        }
 
-        let percentage_progress: f32 = ((i + 1) as f32 / SQUARE_NUMBERS.len() as f32) * 100.0;
-        print!("\rGetting most frequent total: {:.1}%", percentage_progress);
-        std::io::stdout().flush().unwrap();
-    }
+            if i % chunk_size == 0 && i != LIMIT - 1 {
+                let thread_totals_and_counts_cloned: HashMap<usize, usize> =
+                    thread_totals_and_counts.clone();
+                let mut thread_sorted: Vec<(&usize, &usize)> =
+                    thread_totals_and_counts_cloned.iter().collect();
+                thread_sorted.sort_by(|a: &(&usize, &usize), b: &(&usize, &usize)| b.1.cmp(a.1));
+                let top_10: HashMap<&usize, &usize> = thread_sorted
+                    .into_iter()
+                    .take(10)
+                    .map(|(total, count): (&usize, &usize)| (total, count))
+                    .collect();
+                thread_totals_and_counts.clear();
+                top_10
+                    .into_iter()
+                    .for_each(|(total, count): (&usize, &usize)| {
+                        thread_totals_and_counts.insert(*total, *count);
+                    });
+            }
+        });
 
-    println!();
+    let merged_totals: HashMap<usize, usize> = parallel_merge_all(totals_and_counts_per_thread);
 
-    let most_frequent_total: usize = *totals_and_counts
+    let most_frequent_total: usize = *merged_totals
         .par_iter()
         .max_by_key(|&(_, count): &(&usize, &usize)| count)
         .unwrap()
         .0;
     println!("The most frequent total is {}", most_frequent_total);
 
-    drop(totals_and_counts);
+    drop(merged_totals);
 
     println!("Calculating triplets_that_make_total");
     let triplets_that_make_total: Vec<[usize; 3]> = SQUARE_NUMBERS
