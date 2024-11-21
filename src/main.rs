@@ -100,8 +100,6 @@ fn main() {
         .0;
     println!("The most frequent total is {}", most_frequent_total);
 
-    drop(merged_totals);
-
     println!("Calculating triplets_that_make_total");
     let triplets_that_make_total: Vec<[usize; 3]> = SQUARE_NUMBERS
         .par_iter()
