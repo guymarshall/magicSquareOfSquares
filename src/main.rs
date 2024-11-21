@@ -50,16 +50,16 @@ fn main() {
         .par_iter()
         .enumerate()
         .for_each(|(i, first): (usize, &usize)| {
-            let totals: Vec<usize> = SQUARE_NUMBERS
-                .par_iter()
-                .enumerate()
-                .flat_map(|(j, second): (usize, &usize)| {
-                    SQUARE_NUMBERS
-                        .par_iter()
-                        .skip(j + 1)
-                        .map(move |third: &usize| first + second + third)
-                })
-                .collect();
+            let totals =
+                SQUARE_NUMBERS
+                    .iter()
+                    .enumerate()
+                    .flat_map(|(j, second): (usize, &usize)| {
+                        SQUARE_NUMBERS
+                            .iter()
+                            .skip(j + 1)
+                            .map(move |third: &usize| first + second + third)
+                    });
 
             let thread_id: usize = rayon::current_thread_index().unwrap();
             let mut thread_totals_and_counts: MutexGuard<'_, HashMap<usize, usize>> =
@@ -67,7 +67,7 @@ fn main() {
                     .lock()
                     .expect("Failed to lock mutex");
 
-            totals.into_iter().for_each(|total: usize| {
+            totals.for_each(|total: usize| {
                 *thread_totals_and_counts.entry(total).or_insert(0) += 1;
             });
 
