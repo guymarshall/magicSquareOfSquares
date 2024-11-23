@@ -72,21 +72,23 @@ fn main() {
             });
 
             if i % chunk_size == 0 && i != LIMIT - 1 {
-                let thread_totals_and_counts_cloned: HashMap<usize, usize> =
-                    thread_totals_and_counts.clone();
-                let mut thread_sorted: Vec<(&usize, &usize)> =
-                    thread_totals_and_counts_cloned.iter().collect();
-                thread_sorted.sort_by(|a: &(&usize, &usize), b: &(&usize, &usize)| b.1.cmp(a.1));
-                let top_10: HashMap<&usize, &usize> = thread_sorted
+                let mut thread_sorted: Vec<(usize, usize)> = thread_totals_and_counts
+                    .iter()
+                    .map(|(&key, &value)| (key, value))
+                    .collect();
+                thread_sorted.sort_by(|current: &(usize, usize), next: &(usize, usize)| {
+                    next.1.cmp(&current.1)
+                });
+                let top_10: HashMap<usize, usize> = thread_sorted
                     .into_iter()
                     .take(10)
-                    .map(|(total, count): (&usize, &usize)| (total, count))
+                    .map(|(total, count): (usize, usize)| (total, count))
                     .collect();
                 thread_totals_and_counts.clear();
                 top_10
                     .into_iter()
-                    .for_each(|(total, count): (&usize, &usize)| {
-                        thread_totals_and_counts.insert(*total, *count);
+                    .for_each(|(total, count): (usize, usize)| {
+                        thread_totals_and_counts.insert(total, count);
                     });
             }
         });
