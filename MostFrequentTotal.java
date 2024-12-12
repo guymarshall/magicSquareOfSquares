@@ -1,7 +1,8 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class MostFrequentTotal {
 
@@ -25,19 +26,20 @@ public class MostFrequentTotal {
                 }
             }
 
-            Map<Integer, Integer> counter = new HashMap<>();
-            for (int total : totals) {
-                counter.put(total, counter.getOrDefault(total, 0) + 1);
-            }
+            Map<Integer, Integer> counter = totals.stream()
+                .collect(Collectors.toMap(
+                    Function.identity(),
+                    v -> 1,
+                    Integer::sum
+                ));
 
-            int currentMostCommonTotal = -1;
-            int frequency = -1;
-            for (Map.Entry<Integer, Integer> entry : counter.entrySet()) {
-                if (entry.getValue() > frequency) {
-                    currentMostCommonTotal = entry.getKey();
-                    frequency = entry.getValue();
-                }
-            }
+                Map.Entry<Integer, Integer> mostCommonEntry = counter.entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue())
+                .orElseThrow(() -> new IllegalStateException("Counter is empty"));
+
+            int currentMostCommonTotal = mostCommonEntry.getKey();
+            int frequency = mostCommonEntry.getValue();
 
             if (frequency > mostCommonTotalCount) {
                 mostCommonTotalCount = frequency;
