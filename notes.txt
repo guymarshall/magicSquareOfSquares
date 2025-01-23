@@ -1,0 +1,5 @@
+magic constant is always 3x the centre number (x)
+top left is (x - a)
+bottom right is (x + a)
+top right is (x - b)
+bottom left is (x + b)
