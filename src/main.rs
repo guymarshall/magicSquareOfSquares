@@ -1,13 +1,14 @@
 mod combiner;
+mod maths;
 mod square;
 
 use combiner::parallel_merge_all;
+use maths::get_chunk_size;
 use square::{has_duplicates, sums_are_valid};
 use std::collections::HashMap;
 use std::process::exit;
 use std::sync::{Mutex, MutexGuard};
 use std::time::Instant;
-use sysinfo::System;
 
 use rayon::{current_num_threads, prelude::*};
 
@@ -30,15 +31,7 @@ fn main() {
 
     const SQUARE_NUMBERS: [usize; LIMIT] = generate_square_numbers();
 
-    let mut system: System = System::new_all();
-    system.refresh_memory();
-
-    let total_memory_bytes: u64 = system.total_memory();
-    let memory_budget: usize = (total_memory_bytes / 5) as usize;
-
-    let entry_size: usize = std::mem::size_of::<(usize, usize)>();
-    let chunk_size_total: usize = memory_budget / entry_size;
-    let chunk_size: usize = chunk_size_total / current_num_threads();
+    let chunk_size: usize = get_chunk_size();
 
     let totals_and_counts_per_thread: Vec<Mutex<HashMap<usize, usize>>> =
         (0..current_num_threads())
