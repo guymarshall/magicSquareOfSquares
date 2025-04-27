@@ -2,7 +2,7 @@ mod combiner;
 mod square;
 
 use combiner::parallel_merge_all;
-use square::sums_are_valid;
+use square::{has_duplicates, sums_are_valid};
 use std::collections::HashMap;
 use std::process::exit;
 use std::sync::{Mutex, MutexGuard};
@@ -138,16 +138,10 @@ fn main() {
                             bottom_row[2],
                         ];
 
-                        for i in 0..9 {
-                            for j in (i + 1)..9 {
-                                if merged_rows[i] == merged_rows[j] {
-                                    continue;
-                                }
-                            }
+                        if !has_duplicates(&merged_rows) {
+                            println!("{:?}", merged_rows);
+                            exit(0);
                         }
-
-                        println!("{:?}", merged_rows);
-                        exit(0);
                     }
                 }
             });

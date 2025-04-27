@@ -1,4 +1,16 @@
 #[inline(always)]
+pub fn has_duplicates(merged_rows: &[usize; 9]) -> bool {
+    for i in 0..9 {
+        for j in (i + 1)..9 {
+            if merged_rows[i] == merged_rows[j] {
+                return true;
+            }
+        }
+    }
+    false
+}
+
+#[inline(always)]
 pub fn sums_are_valid(
     top_row: &[usize; 3],
     middle_row: &[usize; 3],
