@@ -25,8 +25,7 @@ public class Main {
                                 for (int seventh = 0; seventh < LIMIT; seventh++) {
                                     for (int eighth = 0; eighth < LIMIT; eighth++) {
                                         for (int ninth = 0; ninth < LIMIT; ninth++) {
-                                            int[] square = {squareNumbers[first], squareNumbers[second], squareNumbers[third], squareNumbers[fourth], squareNumbers[fifth], squareNumbers[sixth], squareNumbers[seventh], squareNumbers[eighth], squareNumbers[ninth]};
-//                                            Square square = new Square(squareNumbers[first], squareNumbers[second], squareNumbers[third], squareNumbers[fourth], squareNumbers[fifth], squareNumbers[sixth], squareNumbers[seventh], squareNumbers[eighth], squareNumbers[ninth]);
+                                            Square square = new Square(squareNumbers[first], squareNumbers[second], squareNumbers[third], squareNumbers[fourth], squareNumbers[fifth], squareNumbers[sixth], squareNumbers[seventh], squareNumbers[eighth], squareNumbers[ninth]);
 
                                             if (!Maths.hasDuplicates(square)) {
 //                                            if (!square.hasDuplicates()) {
@@ -34,7 +33,7 @@ public class Main {
 //                                                if (square.isMagicSquare()) {
                                                     System.out.println("MAGIC SQUARE FOUND");
 
-                                                    System.out.printf("%d, %d, %d%n%d, %d, %d%n%d, %d, %d%n", square[0], square[1], square[2], square[3], square[4], square[5], square[6], square[7], square[8]);
+                                                    System.out.printf("%d, %d, %d%n%d, %d, %d%n%d, %d, %d%n", square.topLeft(), square.topMiddle(), square.topRight(), square.middleLeft(), square.middleMiddle(), square.middleRight(), square.bottomLeft(), square.bottomMiddle(), square.bottomRight());
 
                                                     System.exit(0);
                                                 }

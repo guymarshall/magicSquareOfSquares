@@ -1,16 +1,4 @@
 public class Maths {
-    public static boolean hasDuplicates(int[] square) {
-        for (int i = 0; i < 9; i++) {
-            for (int j = i + 1; j < 9; j++) {
-                if (square[i] == square[j]) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
     public static boolean hasDuplicates(Square square) {
         int a0 = square.topLeft();
         int a1 = square.topMiddle();
@@ -48,28 +36,6 @@ public class Maths {
         }
 
         return false;
-    }
-
-    public static boolean isMagicSquare(int[] square) {
-        int firstRowSum = square[0] + square[1] + square[2];
-        int secondRowSum = square[3] + square[4] + square[5];
-        int thirdRowSum = square[6] + square[7] + square[8];
-
-        int firstColumnSum = square[0] + square[3] + square[6];
-        int secondColumnSum = square[1] + square[4] + square[7];
-        int thirdColumnSum = square[2] + square[5] + square[8];
-
-        int nwSeSum = square[0] + square[4] + square[8];
-        int neSwSum = square[2] + square[4] + square[6];
-
-        return
-                (secondRowSum) == firstRowSum &&
-                (thirdRowSum) == firstRowSum &&
-                (firstColumnSum) == firstRowSum &&
-                (secondColumnSum) == firstRowSum &&
-                (thirdColumnSum) == firstRowSum &&
-                (nwSeSum) == firstRowSum &&
-                (neSwSum) == firstRowSum;
     }
 
     public static boolean isMagicSquare(Square square) {
