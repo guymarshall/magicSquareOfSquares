@@ -27,10 +27,8 @@ public class Main {
                                         for (int ninth = 0; ninth < LIMIT; ninth++) {
                                             Square square = new Square(squareNumbers[first], squareNumbers[second], squareNumbers[third], squareNumbers[fourth], squareNumbers[fifth], squareNumbers[sixth], squareNumbers[seventh], squareNumbers[eighth], squareNumbers[ninth]);
 
-                                            if (!Maths.hasDuplicates(square)) {
-//                                            if (!square.hasDuplicates()) {
-                                                if (Maths.isMagicSquare(square)) {
-//                                                if (square.isMagicSquare()) {
+                                            if (!square.hasDuplicates()) {
+                                                if (square.isMagicSquare()) {
                                                     System.out.println("MAGIC SQUARE FOUND");
 
                                                     System.out.printf("%d, %d, %d%n%d, %d, %d%n%d, %d, %d%n", square.topLeft(), square.topMiddle(), square.topRight(), square.middleLeft(), square.middleMiddle(), square.middleRight(), square.bottomLeft(), square.bottomMiddle(), square.bottomRight());
